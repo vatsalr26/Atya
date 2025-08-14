@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting to University Dashboard</title>
+    <script>
+        // Force set user as university staff
+        try {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            user.role = 'UNIVERSITY_STAFF';
+            user.universityName = user.universityName || 'New University';
+            localStorage.setItem('user', JSON.stringify(user));
+            console.log('Forced role to UNIVERSITY_STAFF');
+            
+            // Redirect to dashboard with force parameter
+            window.location.href = 'dashboard.html#force-university';
+        } catch (e) {
+            console.error('Error setting role:', e);
+            alert('Error setting role. Check console for details.');
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting to University Dashboard...</p>
+    <p>If you are not redirected, <a href="dashboard.html#force-university">click here</a>.</p>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Debug Information</h1>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">LocalStorage Contents</h2>
+            <pre id="localStorageContent" class="bg-gray-100 p-4 rounded overflow-auto">Loading...</pre>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">User Role Detection</h2>
+            <div id="roleDetection" class="space-y-4">
+                <div>
+                    <p class="font-medium">User Role:</p>
+                    <p id="userRole" class="text-lg font-bold">Checking...</p>
+                </div>
+                <div>
+                    <p class="font-medium">Dashboard Type:</p>
+                    <p id="dashboardType" class="text-lg font-bold">Checking...</p>
+                </div>
+                <div class="mt-4">
+                    <button onclick="forceRedirect()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Force Redirect to Correct Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Display localStorage contents
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show localStorage contents
+            const localStorageContent = document.getElementById('localStorageContent');
+            const userData = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            
+            let displayContent = {
+                token: token ? '*****' : 'Not found',
+                user: userData ? JSON.parse(userData) : 'Not found'
+            };
+            
+            localStorageContent.textContent = JSON.stringify(displayContent, null, 2);
+            
+            // Show role detection
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const role = user.role || 'No role found';
+                    document.getElementById('userRole').textContent = role;
+                    
+                    // Determine dashboard type
+                    const userRole = (role + '').toUpperCase();
+                    const isUniversityStaff = userRole.includes('UNIVERSITY') || userRole.includes('STAFF');
+                    const dashboardType = isUniversityStaff ? 'University Dashboard' : 'Researcher Dashboard';
+                    document.getElementById('dashboardType').textContent = dashboardType;
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                    document.getElementById('userRole').textContent = 'Error parsing user data';
+                }
+            } else {
+                document.getElementById('userRole').textContent = 'No user data found';
+                document.getElementById('dashboardType').textContent = 'Cannot determine';
+            }
+        });
+        
+        // Function to force redirect to the correct dashboard
+        function forceRedirect() {
+            const userData = localStorage.getItem('user');
+            
+            if (!userData) {
+                alert('No user data found. Please log in first.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                const role = (user.role || '').toUpperCase();
+                const isUniversityStaff = role.includes('UNIVERSITY') || role.includes('STAFF');
+                
+                if (isUniversityStaff) {
+                    // Force set the role to ensure it's correct
+                    user.role = 'UNIVERSITY_STAFF';
+                    localStorage.setItem('user', JSON.stringify(user));
+                    window.location.href = 'dashboard.html#force-university';
+                } else {
+                    // Force set the role to ensure it's correct
+                    user.role = 'RESEARCHER';
+                    localStorage.setItem('user', JSON.stringify(user));
+                    window.location.href = 'dashboard.html#force-researcher';
+                }
+            } catch (e) {
+                console.error('Error:', e);
+                alert('An error occurred. Please check the console for details.');
+            }
+        }
+    </script>
+</body>
+</html>

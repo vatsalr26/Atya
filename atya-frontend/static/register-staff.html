@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as University Staff - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-teal-600">Atya</a>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-teal-600">Home</a>
+                    <a href="login.html" id="loginLink" class="text-gray-700 hover:text-teal-600">Login</a>
+                    <a href="register.html" id="registerLink" class="text-gray-700 hover:text-teal-600">Register</a>
+                    <a href="#" id="logoutBtn" class="hidden text-gray-700 hover:text-teal-600">Logout</a>
+                </nav>
+                <button class="md:hidden text-gray-500 hover:text-gray-700" id="mobileMenuBtn">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden hidden bg-white py-2 px-4" id="mobileMenu">
+            <a href="index.html" class="block py-2 text-gray-700 hover:text-teal-600">Home</a>
+            <a href="login.html" id="mobileLoginLink" class="block py-2 text-gray-700 hover:text-teal-600">Login</a>
+            <a href="register.html" id="mobileRegisterLink" class="block py-2 text-gray-700 hover:text-teal-600">Register</a>
+            <a href="#" id="mobileLogoutBtn" class="hidden block py-2 text-gray-700 hover:text-teal-600">Logout</a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Register as University Staff</h1>
+                <p class="mt-2 text-gray-600">Create your university staff account to manage research positions</p>
+            </div>
+
+            <form id="staffRegistrationForm" class="space-y-6">
+                <div id="universityInfo" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">University Information</h3>
+                    <p class="text-gray-600" id="universityName">Loading university information...</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="firstName" class="block text-sm font-medium text-gray-700">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+                    <input type="email" id="email" name="email" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password *</label>
+                        <input type="password" id="password" name="password" required minlength="8"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                            placeholder="At least 8 characters">
+                    </div>
+                    
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <input id="terms" name="terms" type="checkbox" required
+                        class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                    <label for="terms" class="ml-2 block text-sm text-gray-700">
+                        I agree to the <a href="#" class="text-teal-600 hover:text-teal-500">Terms of Service</a> and <a href="#" class="text-teal-600 hover:text-teal-500">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-end space-x-4">
+                    <a href="dashboard.html" class="text-sm font-medium text-gray-700 hover:text-gray-500">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const universityId = urlParams.get('universityId');
+            
+            if (!universityId) {
+                window.location.href = 'create-university.html';
+                return;
+            }
+
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // If not logged in, redirect to login with a return URL
+                window.location.href = `login.html?returnUrl=register-staff.html?universityId=${universityId}`;
+                return;
+            }
+
+            // Fetch university details
+            try {
+                const response = await fetch(`http://localhost:3000/universities/${universityId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch university details');
+                }
+
+                const university = await response.json();
+                document.getElementById('universityName').textContent = `${university.name}, ${university.country}`;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load university information. Please try again.');
+            }
+
+            // Handle form submission
+            const form = document.getElementById('staffRegistrationForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+
+                const formData = {
+                    email: document.getElementById('email').value,
+                    password: password,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    role: 'UNIVERSITY_STAFF',
+                    universityId: universityId
+                };
+
+                try {
+                    const response = await fetch('http://localhost:3000/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to register staff account');
+                    }
+
+                    // Redirect to university dashboard on success
+                    window.location.href = 'university-dashboard.html';
+                } catch (error) {
+                    alert(error.message || 'An error occurred. Please try again.');
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

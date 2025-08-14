@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="university-dashboard.html" class="text-2xl font-bold text-teal-600">Atya</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" id="backButton" class="text-sm font-medium text-gray-700 hover:text-teal-600">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Applications
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="pt-24 pb-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="loadingState" class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+            </div>
+
+            <div id="errorState" class="hidden bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700" id="errorMessage">
+                            An error occurred while loading the application details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="applicationDetails" class="hidden">
+                <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+                    <div class="px-6 py-5 border-b border-gray-200">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div class="flex items-center">
+                                <div class="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center">
+                                    <span class="text-teal-600 text-xl font-semibold" id="applicantInitial">A</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h2 class="text-xl font-bold text-gray-900" id="applicantName">Applicant Name</h2>
+                                    <p class="text-sm text-gray-500" id="applicantEmail">email@example.com</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 sm:mt-0">
+                                <div class="flex items-center">
+                                    <span id="statusBadge" class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <i class="fas fa-circle text-gray-500 mr-1"></i>
+                                        <span id="statusText">Submitted</span>
+                                    </span>
+                                    <div class="ml-3 relative" id="statusDropdownContainer">
+                                        <button type="button" id="statusDropdownButton" class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                                            Update Status
+                                            <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                                        </button>
+                                        <div id="statusDropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                            <div class="py-1" role="none">
+                                                <button type="button" data-status="REVIEWED" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <i class="fas fa-eye mr-2 text-purple-500"></i> Mark as Reviewed
+                                                </button>
+                                                <button type="button" data-status="INTERVIEW" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <i class="fas fa-calendar-alt mr-2 text-yellow-500"></i> Schedule Interview
+                                                </button>
+                                                <button type="button" data-status="ACCEPTED" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <i class="fas fa-check-circle mr-2 text-green-500"></i> Accept Application
+                                                </button>
+                                                <button type="button" data-status="REJECTED" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <i class="fas fa-times-circle mr-2 text-red-500"></i> Reject Application
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-gray-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Applied for</p>
+                                <p class="font-medium text-gray-900" id="positionTitle">-</p>
+                            </div>
+                            <div class="mt-2 sm:mt-0">
+                                <p class="text-sm text-gray-500">Applied on</p>
+                                <p class="font-medium text-gray-900" id="appliedDate">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white shadow rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Cover Letter</h3>
+                            </div>
+                            <div class="px-6 py-5">
+                                <div id="coverLetter" class="prose max-w-none">
+                                    <p>Loading cover letter...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Documents</h3>
+                            </div>
+                            <div class="px-6 py-5">
+                                <ul id="documentsList" class="space-y-3">
+                                    <li class="animate-pulse flex items-center justify-between py-2 px-3 bg-gray-50 rounded-md">
+                                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-16"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-white shadow rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Application Status</h3>
+                            </div>
+                            <div class="px-6 py-5">
+                                <div class="flow-root">
+                                    <ul id="statusTimeline" class="-mb-8">
+                                        <li class="animate-pulse h-20 bg-gray-100 rounded"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Notes</h3>
+                            </div>
+                            <div class="px-6 py-5">
+                                <div id="notesList" class="space-y-4">
+                                    <div class="animate-pulse h-24 bg-gray-100 rounded"></div>
+                                </div>
+                                <div class="mt-4">
+                                    <form id="addNoteForm">
+                                        <div>
+                                            <label for="note" class="sr-only">Add a note</label>
+                                            <textarea id="note" name="note" rows="3" class="shadow-sm block w-full focus:ring-teal-500 focus:border-teal-500 sm:text-sm border border-gray-300 rounded-md" placeholder="Add a note about this application..."></textarea>
+                                        </div>
+                                        <div class="mt-2 flex justify-end">
+                                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                                                Add Note
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusUpdateModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div>
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-teal-100">
+                        <i class="fas fa-sync-alt text-teal-600"></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-5">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Update Application Status</h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500" id="modalDescription">
+                                Are you sure you want to update the status of this application?
+                            </p>
+                        </div>
+                        <div id="interviewFields" class="mt-4 hidden">
+                            <label for="interviewDate" class="block text-sm font-medium text-gray-700 text-left">Interview Date</label>
+                            <input type="datetime-local" id="interviewDate" name="interviewDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            
+                            <label for="interviewNotes" class="block text-sm font-medium text-gray-700 mt-4 text-left">Notes</label>
+                            <textarea id="interviewNotes" name="interviewNotes" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Add any additional notes about the interview..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                    <button type="button" id="confirmStatusUpdate" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:col-start-2 sm:text-sm">
+                        Update Status
+                    </button>
+                    <button type="button" id="cancelStatusUpdate" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:mt-0 sm:col-start-1 sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get the application ID from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const applicationId = urlParams.get('id');
+            
+            if (!applicationId) {
+                showError('No application ID provided');
+                return;
+            }
+
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // DOM Elements
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const applicationDetails = document.getElementById('applicationDetails');
+            const backButton = document.getElementById('backButton');
+            const statusDropdownButton = document.getElementById('statusDropdownButton');
+            const statusDropdown = document.getElementById('statusDropdown');
+            const statusUpdateModal = document.getElementById('statusUpdateModal');
+            const confirmStatusUpdate = document.getElementById('confirmStatusUpdate');
+            const cancelStatusUpdate = document.getElementById('cancelStatusUpdate');
+            const interviewFields = document.getElementById('interviewFields');
+            const addNoteForm = document.getElementById('addNoteForm');
+
+            let currentStatus = '';
+            let newStatus = '';
+            let applicationData = null;
+
+            // Back button functionality
+            backButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                const referrer = document.referrer;
+                if (referrer && referrer.includes('university-call-detail.html')) {
+                    window.history.back();
+                } else {
+                    window.location.href = 'university-dashboard.html';
+                }
+            });
+
+            // Toggle status dropdown
+            statusDropdownButton.addEventListener('click', () => {
+                const isExpanded = statusDropdownButton.getAttribute('aria-expanded') === 'true';
+                statusDropdownButton.setAttribute('aria-expanded', !isExpanded);
+                statusDropdown.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!statusDropdownButton.contains(e.target) && !statusDropdown.contains(e.target)) {
+                    statusDropdown.classList.add('hidden');
+                    statusDropdownButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Load application data
+            async function loadApplication() {
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Mock data - replace with actual API call
+                    const mockApplication = {
+                        id: applicationId,
+                        status: 'SUBMITTED',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        coverLetter: '<p>This is a sample cover letter from the applicant detailing their qualifications and interest in the position.</p>',
+                        researcher: {
+                            name: 'John Doe',
+                            email: 'john.doe@example.com'
+                        },
+                        openCall: {
+                            title: 'Research Assistant in Computer Science',
+                            department: 'Computer Science Department'
+                        },
+                        documents: [
+                            { id: 1, name: 'Resume.pdf', url: '#' },
+                            { id: 2, name: 'CoverLetter.pdf', url: '#' }
+                        ],
+                        statusHistory: [
+                            { status: 'SUBMITTED', timestamp: new Date().toISOString() }
+                        ]
+                    };
+                    
+                    applicationData = mockApplication;
+                    renderApplication(applicationData);
+                    
+                    // Show the content and hide loading state
+                    applicationDetails.classList.remove('hidden');
+                    loadingState.classList.add('hidden');
+                    
+                } catch (error) {
+                    console.error('Error loading application:', error);
+                    showError(error.message || 'Failed to load application details');
+                }
+            }
+            
+            // Render application data
+            function renderApplication(data) {
+                // Applicant info
+                const applicantName = data.researcher?.name || 'Anonymous';
+                document.getElementById('applicantName').textContent = applicantName;
+                document.getElementById('applicantEmail').textContent = data.researcher?.email || 'No email provided';
+                document.getElementById('applicantInitial').textContent = applicantName.charAt(0).toUpperCase();
+                
+                // Position info
+                document.getElementById('positionTitle').textContent = data.openCall?.title || 'Unknown Position';
+                
+                // Dates
+                const appliedDate = new Date(data.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                document.getElementById('appliedDate').textContent = appliedDate;
+                
+                // Status
+                updateStatusUI(data.status);
+                
+                // Cover letter
+                const coverLetterEl = document.getElementById('coverLetter');
+                if (data.coverLetter) {
+                    coverLetterEl.innerHTML = data.coverLetter;
+                } else {
+                    coverLetterEl.innerHTML = '<p class="text-gray-500 italic">No cover letter provided.</p>';
+                }
+                
+                // Documents
+                if (data.documents && data.documents.length > 0) {
+                    const documentsList = document.getElementById('documentsList');
+                    documentsList.innerHTML = data.documents.map(doc => `
+                        <li class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-md hover:bg-gray-100">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-900">${doc.name}</span>
+                            </div>
+                            <a href="${doc.url}" class="text-sm font-medium text-teal-600 hover:text-teal-500" download>
+                                Download
+                            </a>
+                        </li>
+                    `).join('');
+                }
+                
+                // Status timeline
+                renderStatusTimeline(data.statusHistory || []);
+                
+                // Set up status update handlers
+                setupStatusUpdateHandlers();
+            }
+            
+            // Update status UI
+            function updateStatusUI(status) {
+                currentStatus = status;
+                const statusText = document.getElementById('statusText');
+                const statusBadge = document.getElementById('statusBadge');
+                
+                // Update status text and styling
+                let statusDisplay = '';
+                let badgeClass = '';
+                let iconClass = '';
+                
+                switch(status) {
+                    case 'SUBMITTED':
+                        statusDisplay = 'Submitted';
+                        badgeClass = 'bg-blue-100 text-blue-800';
+                        iconClass = 'fa-circle text-blue-500';
+                        break;
+                    case 'REVIEWED':
+                        statusDisplay = 'Under Review';
+                        badgeClass = 'bg-purple-100 text-purple-800';
+                        iconClass = 'fa-eye text-purple-500';
+                        break;
+                    case 'INTERVIEW':
+                        statusDisplay = 'Interview Scheduled';
+                        badgeClass = 'bg-yellow-100 text-yellow-800';
+                        iconClass = 'fa-calendar-alt text-yellow-500';
+                        break;
+                    case 'ACCEPTED':
+                        statusDisplay = 'Accepted';
+                        badgeClass = 'bg-green-100 text-green-800';
+                        iconClass = 'fa-check-circle text-green-500';
+                        break;
+                    case 'REJECTED':
+                        statusDisplay = 'Rejected';
+                        badgeClass = 'bg-red-100 text-red-800';
+                        iconClass = 'fa-times-circle text-red-500';
+                        break;
+                    default:
+                        statusDisplay = 'Unknown';
+                        badgeClass = 'bg-gray-100 text-gray-800';
+                        iconClass = 'fa-question-circle text-gray-500';
+                }
+                
+                statusText.textContent = statusDisplay;
+                statusBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClass}`;
+                statusBadge.innerHTML = `<i class="fas ${iconClass} mr-1"></i> ${statusDisplay}`;
+            }
+            
+            // Render status timeline
+            function renderStatusTimeline(history) {
+                const timelineEl = document.getElementById('statusTimeline');
+                
+                // Default statuses in order
+                const allStatuses = [
+                    { status: 'SUBMITTED', label: 'Submitted', icon: 'fa-paper-plane' },
+                    { status: 'REVIEWED', label: 'Under Review', icon: 'fa-eye' },
+                    { status: 'INTERVIEW', label: 'Interview', icon: 'fa-calendar-alt' },
+                    { status: 'ACCEPTED', label: 'Accepted', icon: 'fa-check-circle' },
+                    { status: 'REJECTED', label: 'Rejected', icon: 'fa-times-circle' }
+                ];
+                
+                // Find the current status index
+                const currentStatusIndex = allStatuses.findIndex(s => s.status === currentStatus);
+                
+                // Generate timeline items
+                const timelineItems = allStatuses.map((status, index) => {
+                    const isCompleted = index <= currentStatusIndex;
+                    const isCurrent = index === currentStatusIndex;
+                    const isLast = index === allStatuses.length - 1;
+                    
+                    // Find history entry for this status
+                    const historyEntry = history.find(h => h.status === status.status);
+                    const timestamp = historyEntry ? new Date(historyEntry.timestamp).toLocaleDateString() : '';
+                    
+                    return `
+                        <li>
+                            <div class="relative pb-8">
+                                ${!isLast ? '<span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>' : ''}
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span class="h-8 w-8 rounded-full ${isCompleted ? 'bg-teal-500 text-white' : 'bg-gray-200 text-gray-500'} flex items-center justify-center">
+                                            <i class="fas ${status.icon} text-xs"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between">
+                                        <div>
+                                            <p class="text-sm ${isCurrent ? 'text-teal-600 font-medium' : 'text-gray-500'}">
+                                                ${status.label}
+                                            </p>
+                                            ${timestamp ? `<p class="text-xs text-gray-500">${timestamp}</p>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+                
+                timelineEl.innerHTML = timelineItems;
+            }
+            
+            // Set up status update handlers
+            function setupStatusUpdateHandlers() {
+                // Handle status update from dropdown
+                document.querySelectorAll('[data-status]').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        newStatus = button.getAttribute('data-status');
+                        showStatusUpdateModal(newStatus);
+                        statusDropdown.classList.add('hidden');
+                    });
+                });
+
+                // Show status update modal
+                function showStatusUpdateModal(status) {
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalDescription = document.getElementById('modalDescription');
+                    
+                    // Update modal content based on status
+                    switch(status) {
+                        case 'REVIEWED':
+                            modalTitle.textContent = 'Mark as Reviewed';
+                            modalDescription.textContent = 'This will mark the application as reviewed. The applicant will not be notified.';
+                            interviewFields.classList.add('hidden');
+                            break;
+                        case 'INTERVIEW':
+                            modalTitle.textContent = 'Schedule Interview';
+                            modalDescription.textContent = 'Schedule an interview with the applicant.';
+                            interviewFields.classList.remove('hidden');
+                            // Set default interview time to next business day at 10 AM
+                            const tomorrow = new Date();
+                            tomorrow.setDate(tomorrow.getDate() + 1);
+                            tomorrow.setHours(10, 0, 0, 0);
+                            document.getElementById('interviewDate').value = tomorrow.toISOString().slice(0, 16);
+                            break;
+                        case 'ACCEPTED':
+                            modalTitle.textContent = 'Accept Application';
+                            modalDescription.textContent = 'This will accept the application and notify the applicant. Are you sure?';
+                            interviewFields.classList.add('hidden');
+                            break;
+                        case 'REJECTED':
+                            modalTitle.textContent = 'Reject Application';
+                            modalDescription.textContent = 'This will reject the application and notify the applicant. Are you sure?';
+                            interviewFields.classList.add('hidden');
+                            break;
+                    }
+                    
+                    statusUpdateModal.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+                }
+            }
+            
+            // Confirm status update
+            confirmStatusUpdate.addEventListener('click', async () => {
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Update the UI to reflect the new status
+                    updateStatusUI(newStatus);
+                    
+                    // Add to status history
+                    if (applicationData) {
+                        applicationData.status = newStatus;
+                        applicationData.statusHistory.push({
+                            status: newStatus,
+                            timestamp: new Date().toISOString()
+                        });
+                        renderStatusTimeline(applicationData.statusHistory);
+                    }
+                    
+                    // Close modal
+                    statusUpdateModal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                    
+                    // Show success message
+                    alert(`Application status updated to ${newStatus}`);
+                    
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    alert('Failed to update application status. Please try again.');
+                }
+            });
+
+            // Cancel status update
+            cancelStatusUpdate.addEventListener('click', () => {
+                statusUpdateModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            });
+
+            // Add note
+            addNoteForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const noteText = document.getElementById('note').value.trim();
+                
+                if (!noteText) return;
+                
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // In a real app, you would add the note to the application via API
+                    const notesList = document.getElementById('notesList');
+                    const now = new Date();
+                    
+                    // Create new note element
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'flex space-x-3';
+                    noteElement.innerHTML = `
+                        <div class="flex-shrink-0">
+                            <span class="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center">
+                                <span class="text-teal-600 text-sm font-medium">U</span>
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-gray-800">${noteText}</p>
+                            <p class="text-xs text-gray-500 mt-1">You • Just now</p>
+                        </div>
+                    `;
+                    
+                    // Add note to the top of the list
+                    if (notesList.firstChild && notesList.firstChild.classList.contains('text-gray-500')) {
+                        notesList.innerHTML = '';
+                    }
+                    notesList.prepend(noteElement);
+                    
+                    // Clear the form
+                    document.getElementById('note').value = '';
+                    
+                } catch (error) {
+                    console.error('Error adding note:', error);
+                    alert('Failed to add note. Please try again.');
+                }
+            });
+            
+            // Show error message
+            function showError(message) {
+                const errorMessage = document.getElementById('errorMessage');
+                if (errorMessage) {
+                    errorMessage.textContent = message;
+                    errorState.classList.remove('hidden');
+                    loadingState.classList.add('hidden');
+                }
+            }
+            
+            // Initialize
+            loadApplication();
+        });
+    </script>
+</body>
+</html>

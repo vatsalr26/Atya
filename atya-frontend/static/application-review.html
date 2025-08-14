@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Review - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                        'status-pending': '#F59E0B',
+                        'status-approved': '#10B981',
+                        'status-rejected': '#EF4444',
+                        'status-invited': '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .application-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .application-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .status-badge {
+            @apply px-2.5 py-0.5 rounded-full text-xs font-medium;
+        }
+        .status-pending {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .status-approved {
+            @apply bg-green-100 text-green-800;
+        }
+        .status-rejected {
+            @apply bg-red-100 text-red-800;
+        }
+        .status-invited {
+            @apply bg-blue-100 text-blue-800;
+        }
+        .tab-active {
+            @apply border-primary-teal text-primary-teal border-b-2 font-medium;
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="dashboard.html" class="text-2xl font-heading font-bold text-primary-dark-teal">
+                Atya
+            </a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="dashboard.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Dashboard</a>
+                <a href="profile.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">My Profile</a>
+                <a href="open-calls.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Open Calls</a>
+                <a href="application-review.html" class="text-primary-teal font-medium">Applications</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <span id="userEmail" class="hidden md:inline text-neutral-grey">staff@example.com</span>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="mt-24 container mx-auto px-6">
+        <div class="mb-8">
+            <h1 class="font-heading text-3xl md:text-4xl font-bold text-primary-dark-teal">Application Review</h1>
+            <p class="text-neutral-dark-grey mt-2">Review and manage research applications</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden mb-8">
+            <div class="border-b border-neutral-light-grey">
+                <nav class="flex -mb-px overflow-x-auto">
+                    <button class="tab-active whitespace-nowrap py-4 px-6 text-sm font-medium">
+                        All Applications (24)
+                    </button>
+                    <button class="whitespace-nowrap py-4 px-6 text-sm font-medium text-neutral-grey hover:text-primary-teal border-b-2 border-transparent hover:border-neutral-light-grey">
+                        Pending Review (12)
+                    </button>
+                    <button class="whitespace-nowrap py-4 px-6 text-sm font-medium text-neutral-grey hover:text-primary-teal border-b-2 border-transparent hover:border-neutral-light-grey">
+                        Interview Stage (5)
+                    </button>
+                    <button class="whitespace-nowrap py-4 px-6 text-sm font-medium text-neutral-grey hover:text-primary-teal border-b-2 border-transparent hover:border-neutral-light-grey">
+                        Hired (3)
+                    </button>
+                    <button class="whitespace-nowrap py-4 px-6 text-sm font-medium text-neutral-grey hover:text-primary-teal border-b-2 border-transparent hover:border-neutral-light-grey">
+                        Rejected (4)
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-b border-neutral-light-grey bg-neutral-off-white/50">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                placeholder="Search applications..." 
+                                class="pl-10 pr-4 py-2 rounded-lg border border-neutral-light-grey focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent w-full md:w-64"
+                                id="searchInput"
+                            >
+                            <svg class="w-5 h-5 text-neutral-grey absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <select class="border border-neutral-light-grey rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent text-sm">
+                            <option>All Positions</option>
+                            <option>Postdoctoral Researcher in AI Ethics</option>
+                            <option>PhD Position in Machine Learning</option>
+                            <option>Research Scientist in NLP</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-neutral-grey">Sort by:</span>
+                        <select class="border border-neutral-light-grey rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent text-sm">
+                            <option>Most Recent</option>
+                            <option>Application Date</option>
+                            <option>Name (A-Z)</option>
+                            <option>Status</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divide-y divide-neutral-light-grey">
+                <div class="application-card hover:bg-neutral-off-white/30">
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-neutral-light-gray-blue flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xl">👤</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-primary-dark-teal">Dr. Sarah Johnson</h3>
+                                    <p class="text-neutral-grey text-sm">Applied for <span class="font-medium text-neutral-dark-grey">Postdoctoral Researcher in AI Ethics</span></p>
+                                    <div class="flex items-center mt-1 space-x-4">
+                                        <span class="text-sm text-neutral-grey">Applied on May 15, 2023</span>
+                                        <span class="text-sm text-neutral-grey">•</span>
+                                        <span class="text-sm text-neutral-grey">PhD in Computer Science, Stanford University</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 md:mt-0 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-3">
+                                <span class="status-badge status-pending">Pending Review</span>
+                                <div class="flex space-x-2">
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+                                    <div class="relative inline-block text-left">
+                                        <button id="application-menu-1" class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div id="application-menu-1-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="py-1" role="menu" aria-orientation="vertical">
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">Send Message</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">Schedule Interview</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-green-600 hover:bg-neutral-off-white" role="menuitem">Approve</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-off-white" role="menuitem">Reject</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white border-t border-neutral-light-grey" role="menuitem">View Full Application</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application-card hover:bg-neutral-off-white/30">
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-neutral-light-gray-blue flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xl">👨‍🔬</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-primary-dark-teal">Michael Chen</h3>
+                                    <p class="text-neutral-grey text-sm">Applied for <span class="font-medium text-neutral-dark-grey">PhD Position in Machine Learning</span></p>
+                                    <div class="flex items-center mt-1 space-x-4">
+                                        <span class="text-sm text-neutral-grey">Applied on May 12, 2023</span>
+                                        <span class="text-sm text-neutral-grey">•</span>
+                                        <span class="text-sm text-neutral-grey">MSc in Computer Science, MIT</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 md:mt-0 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-3">
+                                <span class="status-badge status-invited">Interview Scheduled</span>
+                                <div class="flex space-x-2">
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+                                    <div class="relative inline-block text-left">
+                                        <button id="application-menu-2" class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div id="application-menu-2-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="py-1" role="menu" aria-orientation="vertical">
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">View Interview Details</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">Reschedule Interview</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-green-600 hover:bg-neutral-off-white" role="menuitem">Approve</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-off-white" role="menuitem">Reject</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white border-t border-neutral-light-grey" role="menuitem">View Full Application</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application-card hover:bg-neutral-off-white/30">
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-neutral-light-gray-blue flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xl">👩‍💻</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-primary-dark-teal">Priya Patel</h3>
+                                    <p class="text-neutral-grey text-sm">Applied for <span class="font-medium text-neutral-dark-grey">Research Scientist in NLP</span></p>
+                                    <div class="flex items-center mt-1 space-x-4">
+                                        <span class="text-sm text-neutral-grey">Applied on May 10, 2023</span>
+                                        <span class="text-sm text-neutral-grey">•</span>
+                                        <span class="text-sm text-neutral-grey">PhD in Computational Linguistics, University of Edinburgh</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 md:mt-0 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-3">
+                                <span class="status-badge status-approved">Approved</span>
+                                <div class="flex space-x-2">
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                    <button class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+                                    <div class="relative inline-block text-left">
+                                        <button id="application-menu-3" class="p-2 text-neutral-grey hover:bg-neutral-light-grey rounded-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div id="application-menu-3-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="py-1" role="menu" aria-orientation="vertical">
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">View Offer Details</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">Send Message</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white" role="menuitem">Move to Hired</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-off-white" role="menuitem">Withdraw Offer</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-neutral-dark-grey hover:bg-neutral-off-white border-t border-neutral-light-grey" role="menuitem">View Full Application</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-6">
+            <div>
+                <p class="text-sm text-neutral-grey">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">24</span> applications
+                </p>
+            </div>
+            <nav class="inline-flex rounded-md shadow">
+                <a href="#" class="px-3 py-2 rounded-l-md border border-neutral-light-grey bg-white text-neutral-grey hover:bg-neutral-off-white">
+                    <span class="sr-only">Previous</span>
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#" class="px-4 py-2 border-t border-b border-neutral-light-grey bg-white text-primary-teal font-medium">1</a>
+                <a href="#" class="px-4 py-2 border border-neutral-light-grey bg-white text-neutral-grey hover:bg-neutral-off-white">2</a>
+                <a href="#" class="px-4 py-2 border-t border-b border-neutral-light-grey bg-white text-neutral-grey hover:bg-neutral-off-white">3</a>
+                <span class="px-4 py-2 border-t border-b border-neutral-light-grey bg-white text-neutral-grey">...</span>
+                <a href="#" class="px-4 py-2 border-t border-b border-neutral-light-grey bg-white text-neutral-grey hover:bg-neutral-off-white">8</a>
+                <a href="#" class="px-3 py-2 rounded-r-md border border-neutral-light-grey bg-white text-neutral-grey hover:bg-neutral-off-white">
+                    <span class="sr-only">Next</span>
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Set up logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+
+        // Toggle dropdown menus
+        document.querySelectorAll('[id^="application-menu-"]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dropdownId = button.id + '-dropdown';
+                const dropdown = document.getElementById(dropdownId);
+                
+                // Close all other dropdowns
+                document.querySelectorAll('[id$="-dropdown"]').forEach(d => {
+                    if (d.id !== dropdownId) {
+                        d.classList.add('hidden');
+                    }
+                });
+                
+                // Toggle current dropdown
+                if (dropdown) {
+                    dropdown.classList.toggle('hidden');
+                }
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('[id$="-dropdown"]').forEach(dropdown => {
+                dropdown.classList.add('hidden');
+            });
+        });
+
+        // Tab switching
+        const tabs = document.querySelectorAll('nav button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('tab-active'));
+                tab.classList.add('tab-active');
+                // In a real app, this would load the appropriate applications
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                const searchTerm = e.target.value.toLowerCase();
+                // In a real app, this would filter the applications
+                console.log('Searching applications for:', searchTerm);
+            }
+        });
+    </script>
+</body>
+</html>

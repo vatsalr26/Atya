@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .settings-card {
+            transition: all 0.3s ease;
+        }
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-heading text-2xl font-bold text-primary-teal">Atya</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="university-dashboard.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Dashboard</a>
+                <a href="create-call.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Create Open Call</a>
+                <a href="university-calls.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">My Open Calls</a>
+                <a href="university-applications.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Applications</a>
+                <a href="university-profile.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Profile</a>
+                <a href="#" class="text-primary-teal font-medium">Settings</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-secondary-seafoam/20 px-3 py-1 rounded-full">
+                    <span class="font-bold text-primary-teal" id="userInitials">U</span>
+                    <span class="ml-2 hidden md:inline" id="userName">University Staff</span>
+                </div>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 mt-24 mb-12">
+        <div class="mb-8">
+            <h1 class="font-heading text-3xl font-bold text-primary-dark-teal">Settings</h1>
+            <p class="text-neutral-dark-grey mt-1">Manage your account preferences</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey p-4 sticky top-24">
+                    <nav class="space-y-2">
+                        <a href="#account" class="block px-4 py-2 rounded-lg bg-primary-teal/10 text-primary-teal font-medium">
+                            <i class="fas fa-user-circle mr-2"></i> Account
+                        </a>
+                        <a href="#notifications" class="block px-4 py-2 rounded-lg text-neutral-grey hover:bg-neutral-light-grey">
+                            <i class="fas fa-bell mr-2"></i> Notifications
+                        </a>
+                        <a href="#security" class="block px-4 py-2 rounded-lg text-neutral-grey hover:bg-neutral-light-grey">
+                            <i class="fas fa-shield-alt mr-2"></i> Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div id="account" class="settings-card bg-white rounded-xl shadow-md border border-neutral-light-grey p-6 mb-6">
+                    <h2 class="text-xl font-bold text-primary-dark-teal mb-6">Account Information</h2>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-grey mb-1">First Name</label>
+                                <input type="text" value="John" class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-grey mb-1">Last Name</label>
+                                <input type="text" value="Doe" class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-neutral-grey mb-1">Email</label>
+                                <input type="email" value="john.doe@harvard.edu" class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-neutral-grey mb-1">Position</label>
+                                <input type="text" value="Research Director" class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button class="px-6 py-2 bg-primary-teal text-white rounded-lg hover:bg-secondary-medium-teal transition-colors font-medium">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="settings-card bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <h2 class="text-xl font-bold text-primary-dark-teal mb-6">Profile Photo</h2>
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="w-24 h-24 rounded-full bg-neutral-light-grey flex items-center justify-center text-3xl font-bold text-primary-teal mb-4 md:mb-0 md:mr-6">
+                            <span>JD</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <label class="px-4 py-2 bg-primary-teal text-white rounded-lg hover:bg-secondary-medium-teal transition-colors font-medium text-center cursor-pointer">
+                                    <input type="file" class="hidden" accept="image/*">
+                                    <span>Choose File</span>
+                                </label>
+                                <button class="px-4 py-2 border border-neutral-light-grey text-neutral-dark-grey rounded-lg hover:bg-neutral-light-grey transition-colors font-medium">
+                                    Remove
+                                </button>
+                            </div>
+                            <p class="text-sm text-neutral-grey mt-2">JPG, GIF or PNG. Max size 2MB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+
+            // Load user data
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.firstName && user.lastName) {
+                    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+                    document.getElementById('userInitials').textContent = initials;
+                    document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        });
+    </script>
+</body>
+</html>

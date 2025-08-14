@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Dashboard - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .dashboard-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-heading text-2xl font-bold text-primary-teal">Atya</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-primary-teal font-medium">Dashboard</a>
+                <a href="create-call.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Create Open Call</a>
+                <a href="university-calls.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">My Open Calls</a>
+                <a href="university-applications.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">
+                    Applications <span class="ml-1 bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full" id="pendingApplicationsCount">0</span>
+                </a>
+                <a href="university-profile.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Profile</a>
+                <a href="settings.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Settings</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-secondary-seafoam/20 px-3 py-1 rounded-full">
+                    <span class="font-bold text-primary-teal" id="userInitials">U</span>
+                    <span class="ml-2 hidden md:inline" id="userName">University Staff</span>
+                </div>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 mt-24">
+        <div class="mb-8">
+            <h1 class="font-heading text-3xl font-bold text-primary-dark-teal">University Dashboard</h1>
+            <p class="text-neutral-dark-grey mt-1">Welcome back! Here's what's happening with your research positions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-neutral-grey">Active Calls</p>
+                        <p class="text-3xl font-bold text-primary-teal mt-2" id="activeCallsCount">0</p>
+                    </div>
+                    <div class="p-3 bg-secondary-seafoam/20 rounded-full">
+                        <i class="fas fa-bullhorn text-primary-teal text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-neutral-grey">Total Applications</p>
+                        <p class="text-3xl font-bold text-blue-500 mt-2" id="totalApplicationsCount">0</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="fas fa-file-alt text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-neutral-grey">Pending Review</p>
+                        <p class="text-3xl font-bold text-yellow-500 mt-2" id="pendingReviewCount">0</p>
+                    </div>
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <i class="fas fa-clock text-yellow-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden">
+            <div class="p-6 border-b border-neutral-light-grey flex justify-between items-center">
+                <h2 class="text-xl font-bold text-primary-dark-teal">Recent Applications</h2>
+                <a href="university-applications.html" class="text-sm font-medium text-primary-teal hover:text-secondary-medium-teal">View All</a>
+            </div>
+            <div id="recentApplications" class="divide-y divide-neutral-light-grey">
+                <div class="p-6 text-center text-neutral-grey">
+                    <p>Loading applications...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Function to handle user data loading with better error handling
+        async function loadUserData() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            try {
+                // Try to get user data from localStorage first
+                const cachedUser = localStorage.getItem('user');
+                if (cachedUser) {
+                    const user = JSON.parse(cachedUser);
+                    updateUserUI(user);
+                    return user;
+                }
+
+                // If not in cache, fetch from server
+                const response = await fetch('http://localhost:3000/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    console.warn('Using fallback data - could not fetch user from server');
+                    return getFallbackUser();
+                }
+
+                const user = await response.json();
+                localStorage.setItem('user', JSON.stringify(user));
+                updateUserUI(user);
+                return user;
+            } catch (error) {
+                console.warn('Error fetching user data, using fallback:', error);
+                return getFallbackUser();
+            }
+        }
+
+        // Fallback user data when backend is not available
+        function getFallbackUser() {
+            const fallbackUser = {
+                firstName: 'University',
+                lastName: 'Staff',
+                universityId: 'demo-university-id',
+                role: 'UNIVERSITY_STAFF'
+            };
+            updateUserUI(fallbackUser);
+            return fallbackUser;
+        }
+
+        // Update UI with user data
+        function updateUserUI(user) {
+            if (user && user.firstName && user.lastName) {
+                const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+                const nameElement = document.getElementById('userName');
+                const initialsElement = document.getElementById('userInitials');
+                
+                if (initialsElement) initialsElement.textContent = initials;
+                if (nameElement) nameElement.textContent = `${user.firstName} ${user.lastName}`;
+            }
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set up logout handler
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Load user data and dashboard
+            try {
+                const user = await loadUserData();
+                if (user && user.universityId) {
+                    await loadDashboardData(localStorage.getItem('token'), user.universityId);
+                } else {
+                    console.warn('No university ID found, loading demo data');
+                    await loadDashboardData(null, 'demo-university-id');
+                }
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+                // Continue with the page even if there's an error
+                loadDashboardData(null, 'demo-university-id');
+            }
+        });
+
+        // Load dashboard data with fallback to demo data
+        async function loadDashboardData(token, universityId) {
+            try {
+                // If no token, load demo data
+                if (!token) {
+                    console.warn('No auth token, loading demo data');
+                    loadDemoDashboardData();
+                    return;
+                }
+
+                // Try to fetch real data
+                try {
+                    const [callsRes, applicationsRes] = await Promise.all([
+                        fetch(`http://localhost:3000/universities/${universityId}/calls/stats`, { 
+                            headers: { 'Authorization': `Bearer ${token}` } 
+                        }),
+                        fetch(`http://localhost:3000/applications/university/${universityId}/stats`, { 
+                            headers: { 'Authorization': `Bearer ${token}` } 
+                        })
+                    ]);
+
+                    if (callsRes.ok && applicationsRes.ok) {
+                        const [callsData, appsData] = await Promise.all([
+                            callsRes.json(),
+                            applicationsRes.json()
+                        ]);
+                        updateDashboardUI(callsData, appsData);
+                        return;
+                    }
+                } catch (fetchError) {
+                    console.warn('Error fetching dashboard data:', fetchError);
+                }
+
+                // If we get here, there was an error with the API calls
+                console.warn('Falling back to demo data');
+                loadDemoDashboardData();
+
+                const callsData = await callsRes.json();
+                const appsData = await applicationsRes.json();
+
+                document.getElementById('activeCallsCount').textContent = callsData.activeCalls || 0;
+                document.getElementById('totalApplicationsCount').textContent = appsData.totalApplications || 0;
+                document.getElementById('pendingReviewCount').textContent = appsData.pendingReview || 0;
+                document.getElementById('pendingApplicationsCount').textContent = appsData.pendingReview || 0;
+
+                await loadRecentApplications(token, universityId);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadRecentApplications(token, universityId) {
+            try {
+                const response = await fetch(
+                    `http://localhost:3000/applications/university/${universityId}?limit=5&sort=-createdAt`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
+
+                if (!response.ok) throw new Error('Failed to fetch applications');
+                const applications = await response.json();
+                const container = document.getElementById('recentApplications');
+
+                if (!applications.length) {
+                    container.innerHTML = `
+                        <div class="p-6 text-center text-neutral-grey">
+                            <i class="far fa-folder-open text-3xl mb-2"></i>
+                            <p>No applications found</p>
+                            <p class="text-sm mt-2">Applications will appear here when researchers apply to your open calls</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = applications.map(app => `
+                    <div class="p-6 hover:bg-neutral-light-grey transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-medium text-primary-dark-teal">${app.researcherName || 'Anonymous Researcher'}</h3>
+                                <p class="text-sm text-neutral-grey">Applied for: ${app.callTitle || 'Unknown Position'}</p>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${
+                                    app.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                    app.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-800' :
+                                    app.status === 'ACCEPTED' ? 'bg-green-100 text-green-800' :
+                                    'bg-neutral-light-grey text-neutral-dark-grey'
+                                }">${app.status?.replace('_', ' ') || 'Unknown'}</span>
+                                <span class="text-sm text-neutral-grey">${new Date(app.createdAt).toLocaleDateString()}</span>
+                                <a href="application-review.html?id=${app.id}" class="text-sm font-medium text-primary-teal hover:text-secondary-medium-teal">View Application</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

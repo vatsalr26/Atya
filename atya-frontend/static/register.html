@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Atya - Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            heading: ['MuseoModerno', 'sans-serif'],
+          },
+          colors: {
+            'primary-dark-teal': '#003B3E',
+            'primary-teal': '#016367',
+            'secondary-medium-teal': '#01949A',
+            'secondary-seafoam': '#49C3A3',
+            'neutral-dark-grey': '#7A7A7A',
+            'neutral-grey': '#B4B4B4',
+            'neutral-light-gray-blue': '#D9E3E5',
+            'neutral-light-grey': '#E8E8E8',
+            'neutral-off-white': '#FAFAFA',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="js/api.js" type="module"></script>
+</head>
+<body class="bg-neutral-off-white min-h-screen">
+  <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-heading font-bold text-primary-dark-teal">
+        Atya
+      </a>
+    </div>
+  </header>
+
+  <main class="pt-32 pb-20">
+    <div class="container mx-auto px-6 max-w-md">
+      <div class="bg-white p-8 rounded-lg shadow-md border border-neutral-light-grey">
+        <h1 class="text-3xl font-heading font-bold text-primary-dark-teal mb-2 text-center">Create Your Account</h1>
+        <p class="text-center text-neutral-grey mb-8">Join our community of researchers and institutions</p>
+        
+        <form id="registerForm">
+          <div class="space-y-4">
+            <div>
+              <label for="registerName" class="block font-medium mb-1">Full Name</label>
+              <input type="text" id="registerName" required 
+                     class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+            </div>
+            
+            <div>
+              <label for="registerEmail" class="block font-medium mb-1">Email</label>
+              <input type="email" id="registerEmail" required 
+                     class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+            </div>
+            
+            <div>
+              <label for="registerPassword" class="block font-medium mb-1">Password</label>
+              <input type="password" id="registerPassword" required minlength="8"
+                     class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent"
+                     placeholder="At least 8 characters">
+            </div>
+            
+            <div>
+              <label for="registerConfirmPassword" class="block font-medium mb-1">Confirm Password</label>
+              <input type="password" id="registerConfirmPassword" required
+                     class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+            </div>
+            
+            <div>
+              <label for="registerRole" class="block font-medium mb-1">I am a</label>
+              <select id="registerRole" required
+                      class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent"
+                      onchange="toggleUniversityField()">
+                <option value="">Select role</option>
+                <option value="RESEARCHER">Researcher</option>
+                <option value="UNIVERSITY_STAFF">University Staff</option>
+              </select>
+            </div>
+            
+            <div id="universityField" class="hidden">
+              <label for="universityId" class="block font-medium mb-1">University</label>
+              <select id="universityId" class="w-full px-4 py-2 border border-neutral-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal focus:border-transparent">
+                <option value="">Select your university</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" 
+                  class="w-full mt-8 bg-primary-teal text-white py-3 rounded-lg font-bold hover:bg-secondary-medium-teal transition-all">
+            Create Account
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <p class="text-neutral-grey">
+            Already have an account? 
+            <a href="login.html" class="text-primary-teal font-medium hover:underline">Log in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Function to toggle university field visibility
+    function toggleUniversityField() {
+      const roleSelect = document.getElementById('registerRole');
+      const universityField = document.getElementById('universityField');
+      if (roleSelect.value === 'UNIVERSITY_STAFF') {
+        universityField.classList.remove('hidden');
+        // Load universities if not already loaded
+        if (document.getElementById('universityId').options.length <= 1) {
+          loadUniversities();
+        }
+      } else {
+        universityField.classList.add('hidden');
+      }
+    }
+    
+    // Function to load universities from the backend
+    async function loadUniversities() {
+      try {
+        const response = await fetch('http://localhost:3000/universities');
+        if (!response.ok) throw new Error('Failed to load universities');
+        const universities = await response.json();
+        
+        const select = document.getElementById('universityId');
+        // Clear existing options except the first one
+        while (select.options.length > 1) {
+          select.remove(1);
+        }
+        
+        // Add universities to the select
+        universities.forEach(university => {
+          const option = document.createElement('option');
+          option.value = university.id;
+          option.textContent = university.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading universities:', error);
+        // Fallback to manual entry if API fails
+        const select = document.getElementById('universityId');
+        select.innerHTML = `
+          <option value="">Select your university</option>
+          <option value="1">Massachusetts Institute of Technology (MIT)</option>
+          <option value="2">Stanford University</option>
+          <option value="3">Harvard University</option>
+          <option value="4">California Institute of Technology (Caltech)</option>
+          <option value="5">University of Cambridge</option>
+        `;
+      }
+    }
+  </script>
+  
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the university field visibility
+      toggleUniversityField();
+    });
+    
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      const role = document.getElementById('registerRole').value;
+      
+      // Store the role in a separate variable to ensure it's not lost
+      const userRole = role === 'UNIVERSITY_STAFF' ? 'UNIVERSITY_STAFF' : 'RESEARCHER';
+      
+      // Basic validation
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      // Validate university selection for staff
+      if (userRole === 'UNIVERSITY_STAFF' && !document.getElementById('universityId').value) {
+        alert('Please select a university');
+        return;
+      }
+      
+      try {
+        console.log('Attempting to register with:', { name, email, role: userRole });
+        
+        // First, register the user with the backend
+        const response = await fetch('http://localhost:3000/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            role: userRole,
+            ...(userRole === 'UNIVERSITY_STAFF' && {
+              universityId: document.getElementById('universityId').value
+            })
+          }),
+        });
+        
+        let data;
+        try {
+          data = await response.json();
+        } catch (e) {
+          console.error('Failed to parse response as JSON:', e);
+          throw new Error('Invalid response from server');
+        }
+        
+        console.log('Registration response:', { status: response.status, data });
+        
+        if (!response.ok) {
+          throw new Error(data.message || `Registration failed with status ${response.status}`);
+        }
+        
+        // Store the token from the response
+        if (data.access_token) {
+          localStorage.setItem('token', data.access_token);
+          
+          // Create and store the user object with the correct role
+          console.log('Creating user with role:', userRole, 'type:', typeof userRole);
+          const user = {
+            email,
+            name,
+            role: userRole, // Force the role to be what was selected
+            universityName: userRole === 'UNIVERSITY_STAFF' ? 'New University' : null
+          };
+          
+          console.log('User object before saving:', user);
+          localStorage.setItem('user', JSON.stringify(user));
+          console.log('User after saving to localStorage:', JSON.parse(localStorage.getItem('user')));
+          
+          // Redirect to the appropriate dashboard based on role
+          if (userRole === 'UNIVERSITY_STAFF') {
+            // For university staff, redirect to the university dashboard
+            window.location.href = 'university-dashboard.html';
+          } else {
+            // For researchers, redirect to the researcher dashboard
+            window.location.href = 'dashboard.html';
+          }
+        } else {
+          throw new Error('No access token received');
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        // Show more detailed error message
+        const errorMessage = error.message || 'An error occurred during registration';
+        console.error('Full error details:', error);
+        alert(`Registration failed: ${errorMessage}`);
+      }
+    });
+  </script>
+</body>
+</html>

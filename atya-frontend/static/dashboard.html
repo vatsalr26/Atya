@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <script type="module" src="/js/api.js"></script>
+    <script type="module" src="/js/dashboard.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .dashboard-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .application-status-new {
+            @apply bg-blue-100 text-blue-800;
+        }
+        .application-status-inreview {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .application-status-accepted {
+            @apply bg-green-100 text-green-800;
+        }
+        .application-status-rejected {
+            @apply bg-red-100 text-red-800;
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-heading text-2xl font-bold text-primary-teal">Atya</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="dashboard.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Dashboard</a>
+                <a href="profile.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium" id="profileLink">My Profile</a>
+                <a href="open-calls.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium" id="openCallsLink">Open Calls</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <span id="userEmail" class="hidden md:inline text-neutral-grey">Loading...</span>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-neutral-grey hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileMenu" class="md:hidden hidden absolute top-16 right-0 left-0 bg-white shadow-lg rounded-b-lg z-50">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-dark-grey hover:bg-neutral-light-grey">Dashboard</a>
+                    <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-dark-grey hover:bg-neutral-light-grey">My Profile</a>
+                    <a href="open-calls.html" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-dark-grey hover:bg-neutral-light-grey">Open Calls</a>
+                    <a href="application-review.html" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-dark-grey hover:bg-neutral-light-grey">Applications</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="mt-24">
+        <section id="researcherDashboard" class="hidden container mx-auto px-6">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="font-heading text-3xl md:text-4xl font-bold text-primary-dark-teal">Welcome back, <span id="researcherName">Researcher</span></h1>
+                    <p class="text-neutral-dark-grey mt-2">Here's what's happening with your applications</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey hover:shadow-lg transition-shadow cursor-pointer" id="activeAppsCard">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-grey">Active Applications</p>
+                            <p class="text-3xl font-bold text-blue-500 mt-2" id="activeAppsCount">5</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey hover:shadow-lg transition-shadow cursor-pointer" id="underReviewCard">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-grey">Under Review</p>
+                            <p class="text-3xl font-bold text-yellow-500 mt-2" id="underReviewCount">3</p>
+                        </div>
+                        <div class="p-3 bg-yellow-100 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey hover:shadow-lg transition-shadow cursor-pointer" id="acceptedOffersCard">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-grey">Accepted Offers</p>
+                            <p class="text-3xl font-bold text-green-500 mt-2" id="acceptedOffersCount">1</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden">
+                <div class="p-6 border-b border-neutral-light-grey flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-primary-dark-teal">Recent Applications</h2>
+                    <div class="flex space-x-2">
+                        <button class="filter-btn bg-primary-teal text-white px-4 py-2 rounded-lg text-sm font-medium" data-filter="all">All</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="active">Active</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="review">Under Review</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="accepted">Accepted</button>
+                    </div>
+                </div>
+                <div class="divide-y divide-neutral-light-grey" id="applicationsList">
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Postdoctoral Researcher in Quantum Computing</h3>
+                                <p class="text-neutral-grey">Massachusetts Institute of Technology</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="application-status px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">Under Review</span>
+                                <span class="text-neutral-grey text-sm">Applied: 2 days ago</span>
+                                <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Research Assistant in Machine Learning</h3>
+                                <p class="text-neutral-grey">Stanford University</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="application-status px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Active</span>
+                                <span class="text-neutral-grey text-sm">Applied: 1 week ago</span>
+                                <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">PhD Position in Artificial Intelligence</h3>
+                                <p class="text-neutral-grey">ETH Zurich</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="application-status px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">Accepted</span>
+                                <span class="text-neutral-grey text-sm">Applied: 3 weeks ago</span>
+                                <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="noApplicationsMessage" class="hidden p-8 text-center">
+                    <svg class="mx-auto h-12 w-12 text-neutral-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-lg font-medium text-neutral-dark-grey">No applications found</h3>
+                    <p class="mt-1 text-neutral-grey">You don't have any applications in this category.</p>
+                    <div class="mt-6">
+                        <a href="open-calls.html" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-teal hover:bg-secondary-medium-teal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-teal">
+                            Browse Open Calls
+                            <svg class="ml-2 -mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="universityDashboard" class="hidden container mx-auto px-6">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="font-heading text-3xl md:text-4xl font-bold text-primary-dark-teal">University Dashboard</h1>
+                    <p class="text-neutral-dark-grey mt-2">Manage your research opportunities and applications</p>
+                </div>
+                <a href="application-review.html" class="bg-primary-teal text-white px-6 py-3 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    View All Applications
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                    <p class="text-neutral-grey">Active Open Calls</p>
+                    <p class="text-3xl font-bold text-primary-teal mt-2">8</p>
+                </div>
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                    <p class="text-neutral-grey">Total Applications</p>
+                    <p class="text-3xl font-bold text-blue-500 mt-2">42</p>
+                </div>
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                    <p class="text-neutral-grey">Under Review</p>
+                    <p class="text-3xl font-bold text-yellow-500 mt-2">15</p>
+                </div>
+                <div class="dashboard-card bg-white p-6 rounded-xl shadow-md border border-neutral-light-grey">
+                    <p class="text-neutral-grey">Positions Filled</p>
+                    <p class="text-3xl font-bold text-green-500 mt-2">5</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden mb-12">
+                <div class="p-6 border-b border-neutral-light-grey flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-primary-dark-teal">Recent Applications</h2>
+                    <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">View All</button>
+                </div>
+                <div class="divide-y divide-neutral-light-grey">
+                    <div class="p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Dr. Sarah Johnson</h3>
+                                <p class="text-neutral-grey">Applied for: Senior Research Fellow in AI Ethics</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium application-status-new">New</span>
+                                <span class="text-neutral-grey text-sm">Applied: 1 hour ago</span>
+                                <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">Review</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden mb-8">
+                <div class="p-6 border-b border-neutral-light-grey flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-primary-dark-teal">Recent Applications</h2>
+                    <div class="flex space-x-2">
+                        <button class="filter-btn bg-primary-teal text-white px-4 py-2 rounded-lg text-sm font-medium" data-filter="all">All</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="pending">Pending Review</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="interview">Interview</button>
+                        <button class="filter-btn bg-white text-neutral-grey border border-neutral-light-grey px-4 py-2 rounded-lg text-sm font-medium" data-filter="accepted">Accepted</button>
+                    </div>
+                </div>
+                <div class="divide-y divide-neutral-light-grey" id="universityApplicationsList">
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Research Assistant in Quantum Computing</h3>
+                                <p class="text-neutral-grey">Applicant: John Doe</p>
+                                <p class="text-sm text-neutral-grey">john.doe@example.com</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">Pending Review</span>
+                                <span class="text-neutral-grey text-sm">Applied: 2 days ago</span>
+                                <a href="application-detail.html?id=1" class="text-primary-teal hover:text-secondary-medium-teal font-medium">Review Application</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Machine Learning Researcher</h3>
+                                <p class="text-neutral-grey">Applicant: Jane Smith</p>
+                                <p class="text-sm text-neutral-grey">jane.smith@example.com</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Interview Scheduled</span>
+                                <span class="text-neutral-grey text-sm">Interview: Tomorrow, 2:00 PM</span>
+                                <a href="application-detail.html?id=2" class="text-primary-teal hover:text-secondary-medium-teal font-medium">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="application-item p-6 hover:bg-neutral-off-white transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="font-bold text-lg">Data Science Intern</h3>
+                                <p class="text-neutral-grey">Applicant: Alex Johnson</p>
+                                <p class="text-sm text-neutral-grey">alex.j@example.com</p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">Accepted</span>
+                                <span class="text-neutral-grey text-sm">Accepted: 1 week ago</span>
+                                <a href="application-detail.html?id=3" class="text-primary-teal hover:text-secondary-medium-teal font-medium">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-neutral-light-grey text-center">
+                    <a href="#" class="text-primary-teal hover:text-secondary-medium-teal font-medium">View all applications</a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden">
+                <div class="p-6 border-b border-neutral-light-grey flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-primary-dark-teal">Your Open Calls</h2>
+                    <button class="text-primary-teal hover:text-secondary-medium-teal font-medium">View All</button>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    <div class="border border-neutral-light-grey rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="font-bold text-lg text-primary-dark-teal">Postdoc in Quantum Computing</h3>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                            </div>
+                            <p class="text-neutral-grey mb-4">Join our quantum computing research team to work on cutting-edge quantum algorithms and applications.</p>
+                            <div class="flex justify-between items-center text-sm text-neutral-grey">
+                                <span>12 Applications</span>
+                                <span>Closes: 2023-12-15</span>
+                            </div>
+                        </div>
+                        <div class="bg-neutral-off-white px-6 py-3 flex justify-end">
+                            <button class="text-primary-teal hover:text-secondary-medium-teal font-medium text-sm">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js" type="module"></script>
+    <script type="module">
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        } else {
+            // In a real app, you would decode the JWT to get user info
+            // For now, we'll just show the researcher dashboard by default
+            document.getElementById('researcherDashboard').classList.remove('hidden');
+            
+            // Set up logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+            
+            // In a real app, you would determine the user type from the JWT
+            // and show the appropriate dashboard
+            // For now, we can toggle between them for demo purposes
+            const toggleDashboard = (type) => {
+                document.getElementById('researcherDashboard').classList.add('hidden');
+                document.getElementById('universityDashboard').classList.add('hidden');
+                document.getElementById(`${type}Dashboard`).classList.remove('hidden');
+            };
+
+        }
+    </script>
+</body>
+</html>

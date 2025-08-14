@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Profile - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .profile-section {
+            transition: all 0.3s ease;
+        }
+        .profile-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-heading text-2xl font-bold text-primary-teal">Atya</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="university-dashboard.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Dashboard</a>
+                <a href="create-call.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Create Open Call</a>
+                <a href="university-calls.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">My Open Calls</a>
+                <a href="university-applications.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">
+                    Applications <span class="ml-1 bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="text-primary-teal font-medium">Profile</a>
+                <a href="settings.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Settings</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-secondary-seafoam/20 px-3 py-1 rounded-full">
+                    <span class="font-bold text-primary-teal" id="userInitials">U</span>
+                    <span class="ml-2 hidden md:inline" id="userName">University Staff</span>
+                </div>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 mt-24 mb-12">
+        <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey p-6 mb-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center">
+                <div class="w-24 h-24 rounded-full bg-neutral-light-grey flex items-center justify-center text-3xl font-bold text-primary-teal mb-4 md:mb-0 md:mr-6">
+                    <span>HU</span>
+                </div>
+                <div class="flex-1">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h1 class="font-heading text-3xl font-bold text-primary-dark-teal">Harvard University</h1>
+                            <p class="text-neutral-grey mt-1">Cambridge, Massachusetts, United States</p>
+                        </div>
+                        <button id="editProfileBtn" class="mt-4 md:mt-0 px-6 py-2 bg-primary-teal text-white rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                            Edit Profile
+                        </button>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-neutral-light-grey text-neutral-dark-grey rounded-full text-sm">Est. 1636</span>
+                        <span class="px-3 py-1 bg-neutral-light-grey text-neutral-dark-grey rounded-full text-sm">Private University</span>
+                        <span class="px-3 py-1 bg-neutral-light-grey text-neutral-dark-grey rounded-full text-sm">Ivy League</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-primary-dark-teal">About</h2>
+                        <button class="text-primary-teal hover:text-secondary-medium-teal">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+                    <p class="text-neutral-grey">
+                        Harvard University is a private Ivy League research university in Cambridge, Massachusetts. Founded in 1636 as Harvard College and named for its first benefactor, the Puritan clergyman John Harvard, it is the oldest institution of higher learning in the United States and among the most prestigious in the world.
+                    </p>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-globe-americas text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Website</p>
+                                <a href="https://www.harvard.edu" class="text-primary-teal hover:underline" target="_blank">www.harvard.edu</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Email</p>
+                                <p>admissions@harvard.edu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-phone-alt text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Phone</p>
+                                <p>+1 (617) 495-1000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Address</p>
+                                <p>Massachusetts Hall, Cambridge, MA 02138, USA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-primary-dark-teal">Research Areas</h2>
+                        <button class="text-primary-teal hover:text-secondary-medium-teal">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-secondary-seafoam/20 text-primary-teal rounded-full text-sm flex items-center">
+                            Artificial Intelligence
+                            <button class="ml-2 text-neutral-grey hover:text-red-500">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </span>
+                        <span class="px-3 py-1 bg-secondary-seafoam/20 text-primary-teal rounded-full text-sm flex items-center">
+                            Quantum Computing
+                            <button class="ml-2 text-neutral-grey hover:text-red-500">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </span>
+                        <span class="px-3 py-1 bg-secondary-seafoam/20 text-primary-teal rounded-full text-sm flex items-center">
+                            Biomedical Engineering
+                            <button class="ml-2 text-neutral-grey hover:text-red-500">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-primary-dark-teal">Active Open Calls</h2>
+                        <a href="create-call.html" class="text-primary-teal hover:text-secondary-medium-teal text-sm font-medium">+ Add New</a>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 border border-neutral-light-grey rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-primary-dark-teal">Senior AI Research Position</h3>
+                                    <p class="text-sm text-neutral-grey">Computer Science Department</p>
+                                </div>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                            </div>
+                            <div class="mt-2 flex items-center text-sm text-neutral-grey">
+                                <span class="flex items-center mr-4">
+                                    <i class="far fa-clock mr-1"></i> Full-time
+                                </span>
+                                <span class="flex items-center">
+                                    <i class="fas fa-users mr-1"></i> 12 Applicants
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4 border border-neutral-light-grey rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-medium text-primary-dark-teal">Postdoc in Quantum Computing</h3>
+                                    <p class="text-sm text-neutral-grey">Physics Department</p>
+                                </div>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Draft</span>
+                            </div>
+                            <div class="mt-2 text-sm text-neutral-grey">
+                                Last saved: 2 hours ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <h2 class="text-xl font-bold text-primary-dark-teal mb-4">University Stats</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-secondary-seafoam/20 rounded-full mr-4">
+                                <i class="fas fa-user-graduate text-primary-teal text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-neutral-grey text-sm">Total Students</p>
+                                <p class="font-bold text-xl">22,000+</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="p-3 bg-secondary-seafoam/20 rounded-full mr-4">
+                                <i class="fas fa-chalkboard-teacher text-primary-teal text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-neutral-grey text-sm">Faculty Members</p>
+                                <p class="font-bold text-xl">2,400+</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="p-3 bg-secondary-seafoam/20 rounded-full mr-4">
+                                <i class="fas fa-flask text-primary-teal text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-neutral-grey text-sm">Research Centers</p>
+                                <p class="font-bold text-xl">120+</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="p-3 bg-secondary-seafoam/20 rounded-full mr-4">
+                                <i class="fas fa-award text-primary-teal text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-neutral-grey text-sm">Nobel Laureates</p>
+                                <p class="font-bold text-xl">161</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <h2 class="text-xl font-bold text-primary-dark-teal mb-4">Contact Information</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">General Inquiries</p>
+                                <p>info@harvard.edu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-phone-alt text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Admissions Office</p>
+                                <p>+1 (617) 495-1551</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary-teal mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-neutral-grey">Mailing Address</p>
+                                <p>Office of Admissions, Harvard University, 86 Brattle Street, Cambridge, MA 02138</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section bg-white rounded-xl shadow-md border border-neutral-light-grey p-6">
+                    <h2 class="text-xl font-bold text-primary-dark-teal mb-4">Connect With Us</h2>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-light-grey flex items-center justify-center text-neutral-dark-grey hover:bg-primary-teal hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-light-grey flex items-center justify-center text-neutral-dark-grey hover:bg-primary-teal hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-light-grey flex items-center justify-center text-neutral-dark-grey hover:bg-primary-teal hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-light-grey flex items-center justify-center text-neutral-dark-grey hover:bg-primary-teal hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-light-grey flex items-center justify-center text-neutral-dark-grey hover:bg-primary-teal hover:text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                // In a real app, this would open an edit form
+                alert('Edit profile functionality will be implemented here');
+            });
+
+            // Load user data
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.firstName && user.lastName) {
+                    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+                    document.getElementById('userInitials').textContent = initials;
+                    document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        });
+    </script>
+</body>
+</html>

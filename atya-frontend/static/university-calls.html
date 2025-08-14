@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Open Calls - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=MuseoModerno:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['MuseoModerno', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark-teal': '#003B3E',
+                        'primary-teal': '#016367',
+                        'secondary-medium-teal': '#01949A',
+                        'secondary-seafoam': '#49C3A3',
+                        'neutral-dark-grey': '#7A7A7A',
+                        'neutral-grey': '#B4B4B4',
+                        'neutral-light-gray-blue': '#D9E3E5',
+                        'neutral-light-grey': '#E8E8E8',
+                        'neutral-off-white': '#FAFAFA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        .call-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .call-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-neutral-off-white text-neutral-dark-grey">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-neutral-light-grey">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-heading text-2xl font-bold text-primary-teal">Atya</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="university-dashboard.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Dashboard</a>
+                <a href="create-call.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Create Open Call</a>
+                <a href="#" class="text-primary-teal font-medium">My Open Calls</a>
+                <a href="university-applications.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">
+                    Applications <span class="ml-1 bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full" id="pendingApplicationsCount">0</span>
+                </a>
+                <a href="university-profile.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Profile</a>
+                <a href="settings.html" class="text-neutral-dark-grey hover:text-primary-teal transition-colors font-medium">Settings</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-secondary-seafoam/20 px-3 py-1 rounded-full">
+                    <span class="font-bold text-primary-teal" id="userInitials">U</span>
+                    <span class="ml-2 hidden md:inline" id="userName">University Staff</span>
+                </div>
+                <button id="logoutBtn" class="bg-primary-teal text-white px-4 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 mt-24">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="font-heading text-3xl font-bold text-primary-dark-teal">My Open Calls</h1>
+                <p class="text-neutral-dark-grey mt-1">Manage your research position listings</p>
+            </div>
+            <a href="create-call.html" class="bg-primary-teal text-white px-6 py-2 rounded-lg hover:bg-secondary-medium-teal transition-all font-medium flex items-center">
+                <i class="fas fa-plus mr-2"></i> Create New Call
+            </a>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-neutral-light-grey p-1 mb-8">
+            <div class="flex space-x 1">
+                <button class="flex-1 py-2 px-4 text-center font-medium text-primary-teal border-b-2 border-primary-teal">
+                    All Calls (3)
+                </button>
+                <button class="flex-1 py-2 px-4 text-center font-medium text-neutral-grey hover:text-primary-teal">
+                    Active (2)
+                </button>
+                <button class="flex-1 py-2 px-4 text-center font-medium text-neutral-grey hover:text-primary-teal">
+                    Drafts (1)
+                </button>
+                <button class="flex-1 py-2 px-4 text-center font-medium text-neutral-grey hover:text-primary-teal">
+                    Closed (0)
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="call-card bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                        <div class="mb-4 md:mb-0">
+                            <div class="flex items-center">
+                                <h3 class="text-xl font-bold text-primary-dark-teal">Senior AI Research Position</h3>
+                                <span class="ml-3 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Active</span>
+                            </div>
+                            <p class="text-neutral-grey mt-2">Computer Science Department</p>
+                            <div class="flex items-center mt-2 text-sm text-neutral-grey">
+                                <span class="flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> Cambridge, MA
+                                </span>
+                                <span class="mx-3">•</span>
+                                <span class="flex items-center">
+                                    <i class="far fa-clock mr-1"></i> Full-time
+                                </span>
+                                <span class="mx-3">•</span>
+                                <span class="flex items-center">
+                                    <i class="fas fa-users mr-1"></i> 12 Applicants
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="university-call-detail.html" class="px-4 py-2 border border-neutral-light-grey text-neutral-dark-grey rounded-lg hover:bg-neutral-light-grey transition-colors">
+                                View Details
+                            </a>
+                            <a href="#" class="px-4 py-2 bg-primary-teal text-white rounded-lg hover:bg-secondary-medium-teal transition-colors">
+                                Manage Applications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="call-card bg-white rounded-xl shadow-md border border-neutral-light-grey overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                        <div class="mb-4 md:mb-0">
+                            <div class="flex items-center">
+                                <h3 class="text-xl font-bold text-primary-dark-teal">Postdoc in Quantum Computing</h3>
+                                <span class="ml-3 bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Draft</span>
+                            </div>
+                            <p class="text-neutral-grey mt-2">Physics Department</p>
+                            <div class="flex items-center mt-2 text-sm text-neutral-grey">
+                                <span class="flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> Remote
+                                </span>
+                                <span class="mx-3">•</span>
+                                <span class="flex items-center">
+                                    <i class="far fa-clock mr-1"></i> Contract
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="university-call-detail.html" class="px-4 py-2 border border-neutral-light-grey text-neutral-dark-grey rounded-lg hover:bg-neutral-light-grey transition-colors">
+                                Edit Draft
+                            </a>
+                            <a href="#" class="px-4 py-2 bg-primary-teal text-white rounded-lg hover:bg-secondary-medium-teal transition-colors">
+                                Publish
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+
+            // Load user data
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.firstName && user.lastName) {
+                    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+                    document.getElementById('userInitials').textContent = initials;
+                    document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        });
+    </script>
+</body>
+</html>

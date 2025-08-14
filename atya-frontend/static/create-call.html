@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Open Call - Atya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            min-height: calc(100vh - 4rem);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-teal-600">Atya</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="university-dashboard.html" class="text-sm font-medium text-gray-700 hover:text-teal-600">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex pt-24">
+        <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white shadow rounded-lg p-8">
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold text-gray-900">Create New Open Call</h1>
+                    <p class="text-gray-600 mt-1">Fill in the details below to post a new research position</p>
+                </div>
+
+                <form id="openCallForm" class="space-y-8">
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-medium text-gray-900 border-b pb-2">Position Details</h2>
+                        
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700">Position Title *</label>
+                            <input type="text" id="title" name="title" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                placeholder="e.g., Postdoctoral Researcher in Quantum Computing">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="positionType" class="block text-sm font-medium text-gray-700">Position Type *</label>
+                                <select id="positionType" name="positionType" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                                    <option value="">Select position type</option>
+                                    <option value="POSTDOC">Postdoctoral Researcher</option>
+                                    <option value="PHD">PhD Student</option>
+                                    <option value="RESEARCH_ASSISTANT">Research Assistant</option>
+                                    <option value="RESEARCH_FELLOW">Research Fellow</option>
+                                    <option value="PROFESSOR">Professor</option>
+                                    <option value="LECTURER">Lecturer</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+
+                            <div id="otherPositionTypeContainer" class="hidden">
+                                <label for="otherPositionType" class="block text-sm font-medium text-gray-700">Specify Position Type *</label>
+                                <input type="text" id="otherPositionType" name="otherPositionType"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="department" class="block text-sm font-medium text-gray-700">Department *</label>
+                                <input type="text" id="department" name="department" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="location" class="block text-sm font-medium text-gray-700">Location *</label>
+                                <input type="text" id="location" name="location" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                    placeholder="e.g., Stanford, CA, USA">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="startDate" class="block text-sm font-medium text-gray-700">Expected Start Date *</label>
+                                <input type="date" id="startDate" name="startDate" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="duration" class="block text-sm font-medium text-gray-700">Duration (months) *</label>
+                                <input type="number" id="duration" name="duration" min="1" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                    placeholder="12">
+                            </div>
+
+                            <div>
+                                <label for="deadline" class="block text-sm font-medium text-gray-700">Application Deadline *</label>
+                                <input type="date" id="deadline" name="deadline" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-medium text-gray-900 border-b pb-2">Position Description</h2>
+                        
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                            <div id="descriptionEditor" class="h-64"></div>
+                            <textarea id="description" name="description" class="hidden" required></textarea>
+                            <p class="mt-1 text-xs text-gray-500">Provide a detailed description of the research position, including project overview and responsibilities.</p>
+                        </div>
+
+                        <div>
+                            <label for="requirements" class="block text-sm font-medium text-gray-700 mb-1">Requirements *</label>
+                            <div id="requirementsEditor" class="h-48"></div>
+                            <textarea id="requirements" name="requirements" class="hidden" required></textarea>
+                            <p class="mt-1 text-xs text-gray-500">List the required qualifications, skills, and experience.</p>
+                        </div>
+
+                        <div>
+                            <label for="benefits" class="block text-sm font-medium text-gray-700 mb-1">Benefits</label>
+                            <div id="benefitsEditor" class="h-32"></div>
+                            <textarea id="benefits" name="benefits" class="hidden"></textarea>
+                            <p class="mt-1 text-xs text-gray-500">List any benefits or perks associated with this position.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-medium text-gray-900 border-b pb-2">Additional Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="salary" class="block text-sm font-medium text-gray-700">Salary Range</label>
+                                <div class="mt-1 flex rounded-md shadow-sm">
+                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                        $
+                                    </span>
+                                    <input type="number" id="salaryMin" name="salaryMin" min="0" step="1000"
+                                        class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none border border-gray-300 focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                        placeholder="Min">
+                                    <span class="inline-flex items-center px-3 border-t border-b border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                        to
+                                    </span>
+                                    <input type="number" id="salaryMax" name="salaryMax" min="0" step="1000"
+                                        class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none border border-l-0 border-gray-300 focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                        placeholder="Max">
+                                    <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                        /year
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="workType" class="block text-sm font-medium text-gray-700">Work Type *</label>
+                                <select id="workType" name="workType" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                                    <option value="FULL_TIME">Full-time</option>
+                                    <option value="PART_TIME">Part-time</option>
+                                    <option value="CONTRACT">Contract</option>
+                                    <option value="TEMPORARY">Temporary</option>
+                                    <option value="INTERNSHIP">Internship</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="educationLevel" class="block text-sm font-medium text-gray-700">Minimum Education Level *</label>
+                                <select id="educationLevel" name="educationLevel" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                                    <option value="BACHELORS">Bachelor's Degree</option>
+                                    <option value="MASTERS">Master's Degree</option>
+                                    <option value="PHD">PhD</option>
+                                    <option value="NONE">None</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="experienceYears" class="block text-sm font-medium text-gray-700">Years of Experience Required</label>
+                                <input type="number" id="experienceYears" name="experienceYears" min="0"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                    placeholder="0">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Required Skills</label>
+                            <div id="skillsContainer" class="space-y-2">
+                                <div class="flex space-x-2">
+                                    <input type="text" class="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Add a skill and press Enter">
+                                </div>
+                            </div>
+                            <input type="hidden" id="skills" name="skills">
+                        </div>
+
+                        <div>
+                            <label for="applicationInstructions" class="block text-sm font-medium text-gray-700 mb-1">Application Instructions *</label>
+                            <div id="applicationInstructionsEditor" class="h-32"></div>
+                            <textarea id="applicationInstructions" name="applicationInstructions" class="hidden" required></textarea>
+                            <p class="mt-1 text-xs text-gray-500">Provide instructions for applicants (required documents, submission process, etc.)</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-5 border-t border-gray-200">
+                        <div class="flex justify-end space-x-3">
+                            <a href="university-dashboard.html" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                                Cancel
+                            </a>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                                <i class="fas fa-save mr-2"></i> Create Open Call
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Initialize TinyMCE editors
+            tinymce.init({
+                selector: '#descriptionEditor',
+                height: 300,
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic backcolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        document.getElementById('description').value = editor.getContent();
+                    });
+                }
+            });
+
+            tinymce.init({
+                selector: '#requirementsEditor',
+                height: 200,
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link charmap print preview',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic | bullist numlist | ' +
+                    'removeformat | help',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        document.getElementById('requirements').value = editor.getContent();
+                    });
+                }
+            });
+
+            tinymce.init({
+                selector: '#benefitsEditor',
+                height: 150,
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link charmap print preview',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic | bullist numlist | ' +
+                    'removeformat | help',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        document.getElementById('benefits').value = editor.getContent();
+                    });
+                }
+            });
+
+            tinymce.init({
+                selector: '#applicationInstructionsEditor',
+                height: 150,
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link charmap print preview',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic | bullist numlist | ' +
+                    'removeformat | help',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        document.getElementById('applicationInstructions').value = editor.getContent();
+                    });
+                }
+            });
+
+            // Toggle other position type field
+            const positionType = document.getElementById('positionType');
+            const otherPositionTypeContainer = document.getElementById('otherPositionTypeContainer');
+            
+            positionType.addEventListener('change', () => {
+                if (positionType.value === 'OTHER') {
+                    otherPositionTypeContainer.classList.remove('hidden');
+                    document.getElementById('otherPositionType').required = true;
+                } else {
+                    otherPositionTypeContainer.classList.add('hidden');
+                    document.getElementById('otherPositionType').required = false;
+                }
+            });
+
+            // Skills management
+            const skillsInput = document.querySelector('#skillsContainer input[type="text"]');
+            const skillsHidden = document.getElementById('skills');
+            const skills = [];
+
+            skillsInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && skillsInput.value.trim() !== '') {
+                    e.preventDefault();
+                    const skill = skillsInput.value.trim();
+                    if (!skills.includes(skill)) {
+                        skills.push(skill);
+                        updateSkillsDisplay();
+                    }
+                    skillsInput.value = '';
+                }
+            });
+
+            function updateSkillsDisplay() {
+                const skillsContainer = document.getElementById('skillsContainer');
+                skillsContainer.innerHTML = `
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        ${skills.map((skill, index) => `
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                                ${skill}
+                                <button type="button" class="ml-1.5 inline-flex text-teal-500 hover:text-teal-700" data-index="${index}">
+                                    <span class="sr-only">Remove skill</span>
+                                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </span>
+                        `).join('')}
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" class="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Add a skill and press Enter">
+                    </div>
+                `;
+                
+                // Update hidden input
+                skillsHidden.value = JSON.stringify(skills);
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('#skillsContainer button[data-index]').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                        skills.splice(index, 1);
+                        updateSkillsDisplay();
+                    });
+                });
+
+                // Focus the new input
+                document.querySelector('#skillsContainer input[type="text"]').focus();
+            }
+
+            // Form submission
+            const form = document.getElementById('openCallForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validate form
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                // Get form data
+                const formData = {
+                    title: document.getElementById('title').value,
+                    positionType: document.getElementById('positionType').value === 'OTHER' ? 
+                        document.getElementById('otherPositionType').value : 
+                        document.getElementById('positionType').value,
+                    department: document.getElementById('department').value,
+                    location: document.getElementById('location').value,
+                    startDate: document.getElementById('startDate').value,
+                    duration: parseInt(document.getElementById('duration').value),
+                    deadline: document.getElementById('deadline').value,
+                    description: tinymce.get('descriptionEditor').getContent(),
+                    requirements: tinymce.get('requirementsEditor').getContent(),
+                    benefits: tinymce.get('benefitsEditor').getContent(),
+                    salaryMin: document.getElementById('salaryMin').value ? 
+                        parseInt(document.getElementById('salaryMin').value) : null,
+                    salaryMax: document.getElementById('salaryMax').value ? 
+                        parseInt(document.getElementById('salaryMax').value) : null,
+                    workType: document.getElementById('workType').value,
+                    educationLevel: document.getElementById('educationLevel').value,
+                    experienceYears: document.getElementById('experienceYears').value ? 
+                        parseInt(document.getElementById('experienceYears').value) : null,
+                    skills: skills,
+                    applicationInstructions: tinymce.get('applicationInstructionsEditor').getContent(),
+                    status: 'OPEN'
+                };
+
+                try {
+                    // Get university ID from user profile
+                    const userResponse = await fetch('http://localhost:3000/auth/me', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!userResponse.ok) {
+                        throw new Error('Failed to fetch user data');
+                    }
+
+                    const user = await userResponse.json();
+                    
+                    if (!user.universityId) {
+                        throw new Error('You are not associated with a university');
+                    }
+
+                    // Create open call
+                    const response = await fetch('http://localhost:3000/open-calls', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            ...formData,
+                            universityId: user.universityId
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to create open call');
+                    }
+
+                    // Redirect to open call details or dashboard
+                    window.location.href = `university-call-detail.html?id=${data.id}`;
+                } catch (error) {
+                    console.error('Error creating open call:', error);
+                    alert(error.message || 'An error occurred while creating the open call');
+                }
+            });
+
+            // Set default start date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('startDate').min = tomorrow.toISOString().split('T')[0];
+            
+            // Set default deadline to 30 days from now
+            const in30Days = new Date();
+            in30Days.setDate(in30Days.getDate() + 30);
+            document.getElementById('deadline').min = new Date().toISOString().split('T')[0];
+            document.getElementById('deadline').value = in30Days.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
