@@ -36,6 +36,7 @@
       font-family: 'DM Sans', sans-serif;
     }
   </style>
+  <script src="js/config.js"></script>
   <script src="js/api.js" type="module"></script>
   <script src="js/auth.js" type="module"></script>
 </head>
@@ -80,72 +81,6 @@
         </p>
       </div>
 
-      <script type="module">
-        import { auth } from './js/api.js';
-      
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const email = document.getElementById('loginEmail').value;
-          const password = document.getElementById('loginPassword').value;
-          
-          try {
-            // Show loading state
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Logging in...';
-            
-            // Login the user
-            const response = await auth.login({ email, password });
-            
-            // Store the JWT token
-            localStorage.setItem('token', response.access_token);
-            
-            // Get user data from response or fall back to localStorage
-            let user = response.user || JSON.parse(localStorage.getItem('user') || '{}');
-            
-            // If no role in response or localStorage, use email domain as fallback
-            if (!user.role) {
-              const isUniversityEmail = email.endsWith('.edu') || email.includes('university') || email.includes('college');
-              user = {
-                email: email,
-                name: response.name || email.split('@')[0],
-                role: isUniversityEmail ? 'UNIVERSITY_STAFF' : 'RESEARCHER',
-                universityName: isUniversityEmail ? 'University' : null
-              };
-            } else {
-              // Ensure we have all required user fields
-              user = {
-                email: email,
-                name: response.name || user.name || email.split('@')[0],
-                role: user.role, // Keep the role from response or localStorage
-                universityName: user.role === 'UNIVERSITY_STAFF' ? (user.universityName || 'University') : null
-              };
-            }
-            
-            console.log('Logging in user:', user);
-            // Store updated user data in localStorage
-            localStorage.setItem('user', JSON.stringify(user));
-            
-            // Force redirect to the correct dashboard based on role
-            const dashboardUrl = (userRole || '').toUpperCase() === 'UNIVERSITY_STAFF' 
-              ? 'university-dashboard.html' 
-              : 'dashboard.html';
-              
-            console.log('Redirecting to:', dashboardUrl, 'for role:', userRole);
-            window.location.href = dashboardUrl;
-          } catch (error) {
-            console.error('Login error:', error);
-            alert(error.message || 'Invalid email or password');
-          } finally {
-            // Reset button state
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Login';
-          }
-        });
-      </script>
 
 </body>
 </html>

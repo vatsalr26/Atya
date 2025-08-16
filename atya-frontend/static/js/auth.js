@@ -30,36 +30,64 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await auth.login({ email, password });
                 
-                // Store the token and user data in localStorage
-                localStorage.setItem('token', response.access_token);
+                // Store the token in localStorage
+                if (response.access_token || response.token) {
+                    localStorage.setItem('token', response.access_token || response.token);
+                }
                 
-                // Get user data from localStorage if it exists and has a role
-                let user = JSON.parse(localStorage.getItem('user') || '{}');
+                // Debug: Log the full API response
+                console.log('Login API response:', response);
                 
-                // If we don't have a user with role in localStorage, create a new one
-                if (!user.role) {
-                    // Check if the email is from a university domain as a fallback
-                    const isUniversityEmail = email.endsWith('.edu') || email.includes('university') || email.includes('college');
+                // Create user object from API response or use existing data
+                let user = {
+                    email: email,
+                    name: response.name || email.split('@')[0],
+                    // Default to RESEARCHER if role not provided
+                    role: (response.role || 'RESEARCHER').toUpperCase(),
+                    universityName: response.universityName || null
+                };
+                
+                console.log('Initial user object:', user);
+                
+                // Fallback to email-based role detection if role is still not properly set
+                if (!user.role || user.role === 'RESEARCHER') {
+                    const isUniversityEmail = email.endsWith('.edu') || 
+                                          email.includes('university') || 
+                                          email.includes('college') ||
+                                          email.includes('staff');
                     
-                    user = {
-                        email: email,
-                        name: email.split('@')[0],
-                        role: isUniversityEmail ? 'UNIVERSITY_STAFF' : 'RESEARCHER',
-                        universityName: isUniversityEmail ? 'University' : null
-                    };
+                    if (isUniversityEmail) {
+                        user.role = 'UNIVERSITY_STAFF';
+                        user.universityName = user.universityName || 'University';
+                        console.log('Assigned UNIVERSITY_STAFF role based on email');
+                    } else {
+                        user.role = 'RESEARCHER';
+                        console.log('Assigned RESEARCHER role as default');
+                    }
                 }
                 
                 localStorage.setItem('user', JSON.stringify(user));
                 
-                // Redirect to the appropriate dashboard based on role
-                const userRole = (user.role || '').toUpperCase();
-                if (userRole.includes('UNIVERSITY') || userRole.includes('STAFF')) {
-                    window.location.href = 'university-dashboard.html';
-                } else {
-                    window.location.href = 'dashboard.html';
-                }
+                // Ensure user data is properly saved before redirect
+                console.log('Final user data before redirect:', user);
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                // Add a small delay to ensure localStorage is updated
+                setTimeout(() => {
+                    // Redirect to the appropriate dashboard based on role
+                    const userRole = user.role || 'RESEARCHER';
+                    console.log('Redirecting with role:', userRole);
+                    
+                    if (userRole.includes('UNIVERSITY') || userRole.includes('STAFF') || userRole.includes('ADMIN')) {
+                        console.log('Redirecting to university dashboard');
+                        window.location.href = 'university-dashboard.html';
+                    } else {
+                        console.log('Redirecting to researcher dashboard');
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 100);
             } catch (error) {
-                alert(error.message || 'Login failed');
+                console.error('Login failed:', error.message || 'Unknown error');
             }
         });
     }
@@ -93,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('token', response.access_token);
                 }
                 
-                alert('Registration successful! You will be redirected to the appropriate dashboard.');
+                console.log('Registration successful! Redirecting to dashboard...');
                 
                 // Redirect directly based on role
                 if (role === 'UNIVERSITY_STAFF') {
@@ -103,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Registration error:', error);
-                alert(error.message || 'Registration failed');
+                console.error('Registration failed:', error.message || 'Unknown error');
             }
         });
     }

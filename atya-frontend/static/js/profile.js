@@ -525,8 +525,8 @@ class ProfileManager {
     
     // Show a notification to the user
     showNotification(message, type = 'info') {
-        // You can implement a more sophisticated notification system
-        alert(`${type.toUpperCase()}: ${message}`);
+        // Log the notification to the console
+        console.log(`${type.toUpperCase()}: ${message}`);
     }
     
     // Handle social link clicks

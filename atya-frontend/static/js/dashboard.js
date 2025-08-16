@@ -206,12 +206,21 @@ async function initializeAppData() {
 
 async function loadDashboard() {
     try {
+        // Debug: Log all localStorage items
+        console.log('--- DEBUG: localStorage contents ---');
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            console.log(`${key}:`, localStorage.getItem(key));
+        }
+        
         // Get user data from localStorage
         let userData = {};
         try {
             const userDataStr = localStorage.getItem('user');
+            console.log('Raw user data from localStorage:', userDataStr);
             if (userDataStr) {
                 userData = JSON.parse(userDataStr);
+                console.log('Parsed user data:', userData);
             }
         } catch (e) {
             console.error('Error parsing user data from localStorage:', e);
@@ -259,17 +268,18 @@ async function loadDashboard() {
         } else {
             // If no force redirect, check the role from localStorage
             console.log('No force redirect, checking localStorage role');
-            // Get the role and normalize it
-            const userRole = (userData.role || '').toString().toUpperCase();
-            console.log('User role from localStorage:', userRole);
+            console.log('User data from localStorage:', userData);
+            
+            // Safely get and normalize the role
+            const userRole = userData?.role ? String(userData.role).trim().toUpperCase() : '';
+            console.log('Normalized user role:', userRole);
             
             // Check if user is university staff (case-insensitive check)
             isUniversityStaff = userRole.includes('UNIVERSITY') || 
                               userRole.includes('STAFF') || 
-                              (userData.role && (
-                                  userData.role.toString().toLowerCase().includes('university') || 
-                                  userData.role.toString().toLowerCase().includes('staff')
-                              ));
+                              userRole.includes('ADMIN');
+            
+            console.log('Is university staff?', isUniversityStaff);
         }
         
         console.log('Is university staff?', isUniversityStaff);
@@ -319,7 +329,7 @@ async function loadDashboard() {
         
     } catch (error) {
         console.error('Error loading dashboard:', error);
-        alert('Failed to load dashboard. Please try again.');
+        console.error('Failed to load dashboard. Please check the console for details.');
     }
 }
 
@@ -484,7 +494,12 @@ const userData = JSON.parse(localStorage.getItem('user'));
 if (!userData) return;
 
         // Update welcome message based on user role
-        if (userData.role === 'university') {
+        const userRole = userData?.role ? String(userData.role).trim().toUpperCase() : '';
+        const isStaff = userRole.includes('UNIVERSITY') || 
+                       userRole.includes('STAFF') || 
+                       userRole.includes('ADMIN');
+                       
+        if (isStaff) {
             const welcomeElement = document.querySelector('#universityDashboard h1');
             if (welcomeElement) {
                 const universityName = userData.universityName || 'University';
