@@ -1,0 +1,199 @@
+### Test 1: Register a new Researcher
+# @name registerResearcher
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "albert.einstein@aveksana.com",
+    "password": "pass!123",
+    "role": "RESEARCHER"
+}
+
+###
+@researcher_token = {{registerResearcher.response.body.access_token}}
+
+
+### Test 2: Create a University (NEW DYNAMIC STEP)
+# @name createUniversity
+POST http://localhost:3000/universities
+Content-Type: application/json
+Authorization: Bearer {{researcher_token}}
+
+{
+    "name": "Institute for Advanced Study",
+    "country": "USA"
+}
+
+###
+@university_id = {{createUniversity.response.body.id}}
+
+
+### Test 3: Register a new University user with the dynamic ID
+# @name registerUniversity
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "admin.physics@ias.edu",
+    "password": "password123",
+    "role": "UNIVERSITY_STAFF",
+    "universityId": "{{university_id}}"
+}
+
+###
+@university_token = {{registerUniversity.response.body.access_token}}
+
+
+### Test 4: Create a new Open Call
+# @name createOpenCall
+POST http://localhost:3000/open-calls
+Content-Type: application/json
+Authorization: Bearer {{university_token}}
+
+{
+    "title": "Machine learning engineer",
+    "summary": "create selflearnign algorithms",
+    "researchArea": "Artficial Intelligence",
+    "keywords": ["ML", "AI", "maths"],
+    "projectTypes": ["APPLIED_RESEARCH"],
+    "targetNumberOfAwards": 3,
+    "eligibleCountries": ["USA", "EU"],
+    "eligibleCareerStages": ["POSTDOC"],
+    "fundingType": "Scholarhsip",
+    "fundingAmount": "$70,000,000 per year",
+    "submissionOpenDate": "2024-09-01T00:00:00.000Z",
+    "submissionDeadline": "2029-12-31T23:59:59.000Z",
+    "reviewPeriodStartDate": "2026-01-01T00:00:00.000Z",
+    "notificationDate": "2026-03-01T00:00:00.000Z",
+    "status": "OPEN"
+}
+
+###
+@open_call_id = {{createOpenCall.response.body.id}}
+
+###
+### Test 5: Researcher Views All Open Calls (Public)
+# @name viewOpenCalls
+GET http://localhost:3000/open-calls
+
+###
+### Test 6: University Views Applicants for Their Call (Should be Empty)
+GET http://localhost:3000/open-calls/{{open_call_id}}/applications
+Authorization: Bearer {{university_token}}
+
+###
+### Test 7: Researcher Submits Application
+# @name createProposal
+POST http://localhost:3000/proposals
+Content-Type: application/json
+Authorization: Bearer {{researcher_token}}
+
+{
+    "title": "Proposal on General Relativity",
+    "content": { 
+        "abstract": "A detailed look into the principles of general relativity.", 
+        "methodology": "Theoretical analysis and mathematical modeling." 
+    }
+}
+
+###
+@proposal_id = {{createProposal.response.body.id}}
+
+
+### Test 8: Researcher Submits Application
+# @name submitApplication
+POST http://localhost:3000/applications
+Content-Type: application/json
+Authorization: Bearer {{researcher_token}}
+
+{
+    "openCallId": "{{open_call_id}}",
+    "submittedProposalId": "{{proposal_id}}",
+    "submittedCoverLetter": "My work on the photoelectric effect is highly relevant to this position."
+}
+
+###
+@application_id = {{submitApplication.response.body.id}}
+
+
+### Test 9: University Views Applicants Again (Should see 1 Applicant)
+GET http://localhost:3000/open-calls/{{open_call_id}}/applications
+Authorization: Bearer {{university_token}}
+
+### Test 10: University Updates Application Status to 'UNDER_REVIEW'
+# @name updateStatusToReview
+PATCH http://localhost:3000/applications/{{application_id}}/status
+Content-Type: application/json
+Authorization: Bearer {{university_token}}
+
+{
+    "status": "UNDER_REVIEW"
+}
+
+###
+### Test 11: Researcher Views Their Application and Sees Updated Status
+# @name viewMyApplications
+GET http://localhost:3000/applications/me
+Authorization: Bearer {{researcher_token}}
+
+###
+### Test 12: University Updates Application Status to 'SHORTLISTED'
+PATCH http://localhost:3000/applications/{{application_id}}/status
+Content-Type: application/json
+Authorization: Bearer {{university_token}}
+
+{
+    "status": "SHORTLISTED"
+}
+
+###
+### --- EDGE CASE TESTS ---
+
+###
+### Test 13 (Edge Case): Unauthorized Status Update
+# An anonymous user tries to update the status. This should fail with a 401 error.
+PATCH http://localhost:3000/applications/{{application_id}}/status
+Content-Type: application/json
+# NO Authorization header is sent
+
+{
+    "status": "HIRED"
+}
+
+###
+### Test 14 (Edge Case): Wrong Role Status Update
+# The researcher tries to update their own application status. This should fail with a 403 error.
+PATCH http://localhost:3000/applications/{{application_id}}/status
+Content-Type: application/json
+Authorization: Bearer {{researcher_token}}
+
+{
+    "status": "HIRED"
+}
+
+###
+### Test 15 (Edge Case): Duplicate Application
+# The researcher tries to apply to the same open call a second time. This should fail with a 403 error.
+POST http://localhost:3000/applications
+Content-Type: application/json
+Authorization: Bearer {{researcher_token}}
+
+{
+    "openCallId": "{{open_call_id}}",
+    "submittedProposalId": "{{proposal_id}}",
+    "submittedCoverLetter": "This is a second application attempt."
+}
+
+###
+### Test 16 (Edge Case): Duplicate Email Registration
+# Try to register a new user with an email that already exists. This should fail with a 409 error.
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "albert.einstein@aveksana.com",
+    "password": "anotherpassword",
+    "role": "RESEARCHER"
+}
+
+###
