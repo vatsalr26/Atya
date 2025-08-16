@@ -165,14 +165,13 @@ These credentials work in development mode without requiring a backend.
 
 1. **Navigate to the frontend directory**
    ```bash
-   cd ../atya-frontend
+   cd atya-frontend
    ```
 
-2. **Install Python dependencies**
-   The frontend uses a simple Python HTTP server. Ensure you have Python installed, then:
+2. **Install Node.js dependencies**
+   The frontend uses Vite for development and building. Install the required packages:
    ```bash
-   # Install required Python packages (if any)
-   pip install -r requirements.txt  # if exists
+   npm install
    ```
 
 3. **Configure environment variables**
@@ -189,15 +188,20 @@ These credentials work in development mode without requiring a backend.
    # VITE_LINKEDIN_CLIENT_ID=your-linkedin-client-id
    ```
 
-4. **Install Node.js dependencies** (if any build step is required)
+4. **Development Server**
+   Start the Vite development server with hot module replacement:
    ```bash
-   npm install
+   npm run dev
    ```
-   
-5. **Build the frontend (if required)**
+   This will start the development server at `http://localhost:3000`
+
+5. **Production Build (Optional)**
+   To create a production build:
    ```bash
    npm run build
+   npm run preview
    ```
+   This will create optimized files in the `dist` directory and start a preview server.
 
 ## Running the Application
 
