@@ -60,8 +60,8 @@ A comprehensive platform connecting researchers with universities for internatio
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/atya-research-platform.git
-   cd atya-research-platform/Research-Application
+   git clone https://github.com/your-username/atya.git
+   cd atya/Research-Application
    ```
 
 2. **Install dependencies**
