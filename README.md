@@ -14,7 +14,7 @@ A comprehensive platform connecting researchers with universities for internatio
 ### 2. Clone the Repository
 ```bash
 git clone <repository-url>
-cd atya-research-platform
+cd atya
 ```
 
 ## Table of Contents
