@@ -1,0 +1,82 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: atya-db
+    restart: always
+    environment:
+      POSTGRES_DB: atya
+      POSTGRES_USER: atya
+      POSTGRES_PASSWORD: atya
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      traefik:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atya"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build:
+      context: ./Research-Application
+      dockerfile: Dockerfile
+    container_name: atya-backend
+    restart: always
+    networks:
+      traefik:
+    ports:
+      - "8088:8088"
+    labels:
+      traefik.enable: "true"
+      traefik.port: "8088"
+
+      # Redirect all HTTP → HTTPS
+      traefik.http.middlewares.redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.atya-backend-insecure.rule: "Host(`atya-api.aveksana.com`)"
+      traefik.http.routers.atya-backend-insecure.entrypoints: "web"
+      traefik.http.routers.atya-backend-insecure.middlewares: "redirect"
+
+      # Secure router
+      traefik.http.routers.atya-backend.rule: "Host(`atya-api.aveksana.com`)"
+      traefik.http.routers.atya-backend.entrypoints: "websecure"
+      traefik.http.routers.atya-backend.tls: "true"
+      traefik.http.routers.atya-backend.tls.certresolver: "ebhttpchallenge"
+
+  # Frontend
+  frontend:
+    build:
+      context: ./atya-frontend
+      dockerfile: Dockerfile
+    container_name: atya-frontend
+    restart: always
+    environment:
+      - VITE_API_URL=http://atya-api.aveksana.com
+      - NODE_ENV=development
+    networks:
+      traefik:
+    labels:
+      traefik.enable: "true"
+      traefik.port: "3000"
+
+      # Redirect all HTTP → HTTPS
+      traefik.http.middlewares.redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.atya-frontend-insecure.rule: "Host(`atya.aveksana.com`)"
+      traefik.http.routers.atya-frontend-insecure.entrypoints: "web"
+      traefik.http.routers.atya-frontend-insecure.middlewares: "redirect"
+
+      # Secure router
+      traefik.http.routers.atya-frontend.rule: "Host(`atya.aveksana.com`)"
+      traefik.http.routers.atya-frontend.entrypoints: "websecure"
+      traefik.http.routers.atya-frontend.tls: "true"
+      traefik.http.routers.atya-frontend.tls.certresolver: "ebhttpchallenge"
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  postgres_data:
+

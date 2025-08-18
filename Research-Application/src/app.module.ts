@@ -7,6 +7,7 @@ import { UniversityProfilesModule } from './university-profiles/university-profi
 import { OpenCallsModule } from './open-calls/open-calls.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { ProposalsModule } from './proposals/proposals.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { ProposalsModule } from './proposals/proposals.module';
     OpenCallsModule,
     ApplicationsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule { }
