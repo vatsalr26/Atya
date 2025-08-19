@@ -6,7 +6,8 @@ export default defineConfig({
   publicDir: 'static',
   server: {
     port: 3000,
-    open: true,
+    open: false,
+   allowedHosts: true,
   },
   resolve: {
     alias: {

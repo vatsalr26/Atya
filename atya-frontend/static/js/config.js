@@ -7,6 +7,6 @@ window.APP_CONFIG = {
 // You can also load from a config file if needed
 // This will be overridden by the actual config in production
 if (window.location.hostname !== 'localhost') {
-    window.APP_CONFIG.API_URL = 'https://api.your-deployed-backend.com';
-    window.APP_CONFIG.ENV = 'production';
+        window.APP_CONFIG.API_URL = 'https://atya-api.aveksana.com:8088';
+    window.APP_CONFIG.ENV = 'development';
 }
